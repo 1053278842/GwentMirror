@@ -20,7 +20,7 @@
                         </span>
                     </div>
                     <!-- 预览列表 -->
-                    <div id="DeckListGridContainer">
+                    <div id="DeckListGridContainer" ref="deckListContainer">
                         <div id="DeckListGridContainerInner">
                             <div class="DecksListRowContainer" v-for="(deck, index) in decks">
                                 <a class="DeckRowTopLinkContainer">
@@ -92,20 +92,25 @@
                                             </div>
                                             <!-- 卡牌图标列表 -->
                                             <div class="ColumnGroupCardIcons">
-                                                <div class="ColumnGroupCardIcon" v-for="(card, cardIndex) in map[1].cards "
-                                                
-                                                    :key="cardIndex"
-                                                    :class="{ RepeatCardColumn: cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : true }"
-                                                    :data-id="card.id" style="position: relative;"
-                                                    >
-                                                    <!-- cardIndex > 0 ? (card.id != map[1].cards[cardIndex - 1].id) : false -->
-                                                    <CardView :card="card" :data-status=card.status class="CardView" />
-                                                    <CardView :card="card" class="CardView CardIconRepeat"
-                                                        v-if="cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : true" />
+                                                <div v-for="(card, cardIndex) in map[1].cards ">
+                                                    <div class="ColumnGroupCardIcon"
+                                                        v-if="cardIndex === 0 || (card.id != map[1].cards[cardIndex - 1].id)"
+                                                        :key="cardIndex"
+                                                        :class="{ RepeatCardColumn: cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : true }"
+                                                        :data-id="card.id" style="position: relative;">
+                                                        <!-- cardIndex > 0 ? (card.id != map[1].cards[cardIndex - 1].id) : false -->
+                                                        <CardView :card="card" :data-status="card.cardExtInfo.status"
+                                                            class="CardView" />
+                                                        <CardView :card="card" class="CardView CardIconRepeat"
+                                                            v-if="cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : false" />
 
+                                                    </div>
                                                 </div>
                                                 <!-- 隐藏快，用于对齐 -->
-                                                <div style="width: 49.1px;" v-for="card in map[1].cards ">
+                                                <div v-for="(card, cardIndex) in map[1].cards ">
+                                                    <div style="width: 49.1px;"
+                                                        v-if="cardIndex === 0 || (card.id != map[1].cards[cardIndex - 1].id)">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -148,6 +153,8 @@
             </div>
         </div>
     </div>
+    <!-- 卡牌详细信息 -->
+    <CardInfo :card="activeCard.cardInfo" id="CardInfo" />
 </template>
 
 <script setup lang="ts">
@@ -158,6 +165,7 @@ import { useCardEnumStore } from '@/stores/CardEnum'
 import type { Card } from '@/types/Card'
 import { usrNavStatusStore } from '@/stores/status'
 import CardView from './CardView.vue';
+import CardInfo from './CardInfo.vue';
 
 
 
@@ -184,7 +192,13 @@ type Deck = {
 
 const isAllLoaded = ref(true);
 const scrollContainer = ref<HTMLElement | null>(null);
+const deckListContainer = ref<HTMLElement | null>(null);
 const loadingMore = ref<HTMLElement | null>(null);
+const cardInfoContainer = ref<HTMLElement | null>(null);
+
+const activeCard = reactive({
+    cardInfo: {} as Card
+});
 // 输出
 const decks = reactive([] as Deck[])
 // 输入
@@ -237,7 +251,6 @@ const computedAllCard = (deck: Deck) => {
     cards.sort((a, b) =>
         ((b.provision > 0 ? b.provision : 20) * 1000000 - b.id) - ((a.provision > 0 ? a.provision : 20) * 1000000 - a.id)
     )
-    console.log(cards)
     return cards
 }
 
@@ -268,85 +281,42 @@ const computedGroupCardsByType = (deck: Deck) => {
     groupMap.set("special", { cards: [] as Card[], totalCount: 0 })
     groupMap.set("artifact", { cards: [] as Card[], totalCount: 0 })
 
-    var mapIdAndNum: Map<Card, number> = new Map()
-    deck.allCard.forEach((card) => {
-        if (!mapIdAndNum.get(card)) {
-            mapIdAndNum.set(card, 1)
-        } else {
-            mapIdAndNum.set(card, 2)
-        }
-
-    });
-    console.log(mapIdAndNum)
-    // var cards: Card[] = [];
-    mapIdAndNum.forEach((value, key) => {
-        const card: Card = key as Card;
-        if (card !== undefined) {
-            if (value > 1) {
-                card.repeat = true;
-            } else {
-                card.repeat = false;
-            }
-            // cards.push(card);
-        }
-    });
-
-    deck.allCard.forEach(card => {
+    for (let index = 0; index < deck.allCard.length; index++) {
+        const card: Card = deck.allCard[index];
         if (card?.type == "stratagem") {
             let typeGroup = groupMap.get("stratagem")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
-            if (card.repeat) {
-                typeGroup.totalCount = typeGroup.totalCount + 1
-            }
         }
         if (card?.type == "unit") {
             let typeGroup = groupMap.get("unit")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
-            if (card.repeat) {
-                typeGroup.totalCount = typeGroup.totalCount + 1
-            }
         }
         if (card?.type == "special") {
             let typeGroup = groupMap.get("special")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
-            if (card.repeat) {
-                typeGroup.totalCount = typeGroup.totalCount + 1
-            }
         }
         if (card?.type == "artifact") {
             let typeGroup = groupMap.get("artifact")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
-            if (card.repeat) {
-                typeGroup.totalCount = typeGroup.totalCount + 1
-            }
         }
-    });
+    }
 
     return groupMap;
 
 };
 
-const bindCardIcon = (index: number) => {
-    return new URL('../assets/card/art/preview/small/' + (index) + '.jpg', import.meta.url).href
-}
-const bindCardIconBorder = (isGold: boolean) => {
-    if (isGold) {
-        return new URL('../assets/card/art/preview/other/border_gold.png', import.meta.url).href
-    } else {
-        return new URL('../assets/card/art/preview/other/border_bronze.png', import.meta.url).href
-    }
-}
-const isCardRarityHigh = (cardId: number) => {
-    const card: Card | undefined = getCardById(cardId)
-    return card?.rarity == allCardEnumStore.RarityEnum.Legendary || card?.rarity == allCardEnumStore.RarityEnum.Epic
-}
 const getCardById = (cardId: number) => {
     return allCardStore.cardDataMap.get(cardId as number) as Card
 }
+
+const getCardByIdClone = (cardId: number) => {
+    return allCardStore.cardDataMap.get(cardId as number) as Card
+}
+
 // 改变input且失去焦点后提交表单
 const SearchOnChange = () => {
     if (!form.page) {
@@ -362,6 +332,7 @@ const SearchOnChange = () => {
     // page: form.page
     fetchData()
 }
+// 格式化时间输出
 function formatDate(dateString: string): string {
     const date = new Date(dateString);
     const year = date.getFullYear().toString();
@@ -369,6 +340,7 @@ function formatDate(dateString: string): string {
     const day = date.getDate().toString();
     return `${year}/${month}/${day}`;
 }
+//下拉自动加载
 const loadMore = async () => {
     if (!scrollContainer.value || !loadingMore.value) {
         return;
@@ -392,7 +364,96 @@ const loadMore = async () => {
 onMounted(() => {
     fetchData()
     scrollContainer.value?.addEventListener('scroll', loadMore)
+    deckListContainer.value?.addEventListener('mouseover', handleCardMouseOver)
+    // deckListContainer.value?.addEventListener('mouseout', outCard)
 })
+
+const handleCardMouseOver = (event: MouseEvent) => {
+    var cid: number = getCardIdByXY(event.clientX, event.clientY)
+    if (cid <= 0) {
+        //消除信息框
+        const movingDiv = document.querySelector('#PositionContainer');
+        (movingDiv as HTMLElement).style.visibility = 'hidden';
+    } else {
+        //弹出信息框
+        //填充信息框信息
+        var card: Card = getCardById(cid) as Card;
+        card = { ...card }
+        card.res = "larger"
+        activeCard.cardInfo = card;
+        // card.res = "big"
+        
+        
+        var x = event.pageX;
+        var y = event.pageY;
+        const movingDiv = document.querySelector('#PositionContainer');
+        // console.log("mouse:" + x + "," + y);
+        var underElement = getCardByXY(event.clientX, event.clientY)
+        // console.log(movingDiv)
+
+        var cardArtElement = underElement;
+        var cardInfoElement = movingDiv.querySelector('.card-info-wrap');
+
+        if (cardArtElement&&cardInfoElement) {
+            const artPosition = cardArtElement.getBoundingClientRect()
+            const infoPosition = cardInfoElement.getBoundingClientRect()
+            var Y = 0
+            // var X = 0
+            var X = artPosition.x - artPosition.width / 2;
+            // var centerY = position.top + position.height / 2
+            // var Y = position.y + position.height + 10;
+            var screenHeight = window.innerHeight;
+            var screenWidth = window.innerWidth;
+            // console.log("pageY:"+window.innerHeight)
+            // console.log("oY:"+position.top + position.height / 2)
+            // console.log("Y:"+Y)
+            console.log( infoPosition.height)
+            if (screenHeight > artPosition.top + artPosition.height + infoPosition.height + 30) {
+                Y = artPosition.top + artPosition.height + 10;
+                card.verticalDir = "under"
+            } else {
+                Y = artPosition.top - artPosition.height * 2 - 10;
+                card.verticalDir = "above"
+            }
+            if(screenWidth < artPosition.x + artPosition.width + infoPosition.width + 30){
+                card.horizontalDir = "left"
+            }
+            (movingDiv as HTMLElement).style.visibility = 'visible';
+            (movingDiv as HTMLElement).style.left = X + 'px';
+            (movingDiv as HTMLElement).style.top = Y + 'px';
+        }
+
+
+    }
+
+}
+
+const getCardByXY = (x: number, y: number) => {
+    var element = document.elementFromPoint(x, y);
+    while (!element?.classList.contains("card-data")) {
+        if (element == null) {
+            break
+        }
+        element = element!.parentElement;
+    }
+    return element
+}
+
+const getCardIdByXY = (x: number, y: number) => {
+    var element = document.elementFromPoint(x, y);
+    while (!element?.classList.contains("card-data")) {
+        if (element == null) {
+            break
+        }
+        element = element!.parentElement;
+    }
+    if (element) {
+        return parseInt((element as HTMLElement).dataset.id as string) || 0
+    } else {
+        return -1
+    }
+}
+// 监听器
 
 </script>
 <style>
@@ -744,7 +805,7 @@ onMounted(() => {
 .ColumnGroupCardIcon {
     flex: 1 1 auto;
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
     margin-left: 6px;
     margin-bottom: 6px;
     z-index: 0;

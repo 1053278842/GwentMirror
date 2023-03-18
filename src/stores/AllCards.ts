@@ -89,9 +89,12 @@ export const useAllCardStore = defineStore('AllCards', () => {
                     break
             }
             var categories: Array<String>[] = jsonData.translations.en.categories
-            var categorie = "cnm"
+            var category :string= ""
+            if (categories) { // 检查 categories 是否存在
+                category = categories.flat().join(",");
+            }
             var card: Card = {
-                res: parentMessage.value,
+                res: "medium",
 
                 id: jsonData.id,
                 power: jsonData.power,
@@ -104,15 +107,17 @@ export const useAllCardStore = defineStore('AllCards', () => {
                 imgUrl: new URL(imgUrl.value + jsonData.id + imgSuffix.value, import.meta.url).href,
                 name: jsonData.translations.en.name,
                 tooltip: jsonData.translations.en.tooltip,
-                categories: categorie,
+                categories: category,
                 fluff: jsonData.translations.en.fluff,
-                repeat: false,
-                order: 0,
+
                 cardExtInfo: {
                     repeat: false,
                     order: 0,
                     status: ''
-                }
+                },
+                verticalDir:"under",
+                horizontalDir:"right",
+            
             }
             cardDataMap.set(jsonData.id, card)
             cardData.push(card)

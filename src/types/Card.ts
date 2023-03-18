@@ -18,8 +18,8 @@ export type Card = {
     categories: string
     fluff: string
 
-    repeat: boolean
-    order:number
+    verticalDir:string
+    horizontalDir:string
 
     cardExtInfo: CardExtInfo
 }
