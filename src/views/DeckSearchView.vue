@@ -4,7 +4,12 @@
         <div id="page">
             <div id="PageContainer">
                 <div id="PageContainerInner">
-                    <!-- 搜索框 -->
+                    <!-- 卡牌搜索框 -->
+                    <form :model="form"  id="SearchFormContainer" @submit.prevent>
+                        <CardSearchView ></CardSearchView>
+                    </form>
+                    <br>
+                    <!-- 卡组搜索框 -->
                     <form :model="form" @submit.prevent="fetchData" id="SearchFormContainer">
                         <el-icon size="20" color="#409EFC" class="is-loading" id="SearchIcon">
                             <Aim />
@@ -20,9 +25,9 @@
                         </span>
                     </div>
                     <!-- 预览列表 -->
-                    <div id="DeckListGridContainer" ref="deckListContainer">
+                    <div id="DeckListGridContainer" ref="deckListContainer" >
                         <div id="DeckListGridContainerInner">
-                            <div class="DecksListRowContainer" v-for="(deck, index) in decks">
+                            <div class="DecksListRowContainer" v-for="(deck, index) in decks" :key="index">
                                 <a class="DeckRowTopLinkContainer">
                                     <!-- 种族分布bar -->
                                     <div height="80" class="DeckRowCompositionRatioBar">
@@ -33,23 +38,23 @@
                                     <div class="DeckRow_Top">
                                         <div class="DeckRow_ArtContainer">
                                             <div class="DeckRow_ArtContainerInner">
-                                                <div class="DeckRow_ArtContainerList">
+                                                <div class="DeckRow_ArtContainerList"
+                                                    v-for="(card, key) in deck.displayCards" :key="key">
                                                     <div class="DeckRow_ArtImgContainer"
                                                         style="width: 358px; height: 98px; margin-left: -21px; margin-right: 10px; clip-path: polygon(21px 0px, 358px 0px, 337px 98px, 0px 98px); opacity: 0.4;">
-                                                        <img src="@/assets/card/art/preview/small/203088.jpg">
+                                                        <img
+                                                            :src="'/src/assets/card/art/preview/small/' + card.id + '.jpg'">
                                                     </div>
                                                 </div>
-                                                <div class="DeckRow_ArtContainerList">
-                                                    <div class="DeckRow_ArtImgContainer"
-                                                        style="width: 358px; height: 98px; margin-left: -21px; margin-right: 10px; clip-path: polygon(21px 0px, 358px 0px, 337px 98px, 0px 98px); opacity: 0.4;">
-                                                        <img src="@/assets/card/art/preview/small/203234.jpg">
-                                                    </div>
-                                                </div>
-
                                             </div>
                                         </div>
                                         <div class="DeckRow_ArtFade"></div>
+                                        <div class="DeckRow_ArtFade_left"></div>
                                         <div class="DeckRow_Left">
+                                            <div class="DeckIcoContainer">
+                                                <img
+                                                    :src="'/src/assets/card/art/preview/factor/ico/' + deck.displayLeaderCid + '.png'" />
+                                            </div>
                                             <div class="DeckRowInfoContainer">
                                                 <span>【{{ deck.deckName }}】</span>
                                             </div>
@@ -73,72 +78,91 @@
                                         </div>
                                     </div>
                                 </a>
-                                <div class="DeckRowCardContainer">
-                                    <div class="DeckRowCardContainerInner">
-                                        <!-- 分类栏目 -->
-                                        <div class="CardIconColumnContainer" v-for="(map, type) in deck.groupCardsByType"
-                                            :key="type" v-show="map[1].totalCount > 0">
+                                <div class="DeckBgContainer">
+                                    <!-- <div class="DeckBgContainer"> -->
+                                    <div class="DeckRowCardContainer">
+                                        <div class="DeckRowCardContainerInner">
+                                            <!-- 分类栏目 -->
+                                            <div class="CardIconColumnContainer"
+                                                v-for="(map, type) in deck.groupCardsByType" :key="type"
+                                                v-show="map[1].totalCount > 0">
+                                                <!-- 栏目标题 -->
+                                                <div class="ColumnGroupTitle">
+                                                    <!-- 标题图标 -->
+                                                    <div class="ColumnGroupTitleIcon">
+                                                        <el-icon size="18" color="#ffffff" class="TypeIconContainer">
+                                                            <Aim />
+                                                            <!-- <div class="TypeIcon" :data-type="map[0]"></div> -->
+                                                        </el-icon>
+                                                    </div>
+                                                    <!-- 标题内容 -->
+                                                    <span>{{ map[0] }} ({{ map[1].totalCount }})</span>
+                                                </div>
+                                                <!-- 卡牌图标列表 -->
+                                                <div class="ColumnGroupCardIcons" v-if="map[1].cards.length"
+                                                    style="display: flex; justify-content: space-between;">
+                                                    <template v-for="(card, cardIndex) in map[1].cards">
+                                                        <template
+                                                            v-if="cardIndex === 0 || (card.id != map[1].cards[cardIndex - 1].id)">
+                                                            <div style="flex:1 1 auto ;">
+                                                                <div class="ColumnGroupCardIcon"
+                                                                    :class="{ RepeatCardColumn: cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : true }"
+                                                                    :data-id="card.id" style="position: relative;"
+                                                                    @click="selectCard(card)">
+                                                                    <CardView :card="card"
+                                                                        :data-status="card.cardExtInfo.status"
+                                                                        class="CardView" />
+                                                                    <CardView :card="card" class="CardView CardIconRepeat"
+                                                                        v-if="cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : false" />
+                                                                </div>
+                                                            </div>
+                                                        </template>
+                                                    </template>
+
+                                                    <!-- 空元素 -->
+                                                    <div v-for="i in (map[1].cards.length)" style="flex: 1 1 auto;">
+                                                        <div class="hh" style="width: 50.1px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 一栏栏目 -->
+                                    <div class="DeckRowCardContainer OneRead">
+                                        <div class="CardIconColumnContainer">
                                             <!-- 栏目标题 -->
                                             <div class="ColumnGroupTitle">
                                                 <!-- 标题图标 -->
                                                 <div class="ColumnGroupTitleIcon">
-                                                    <el-icon size="18" color="#ffffff" class="TypeIconContainer">
-                                                        <Aim />
-                                                        <!-- <div class="TypeIcon" :data-type="map[0]"></div> -->
+                                                    <el-icon size="18" color="#ffffff">
+                                                        <Edit />
                                                     </el-icon>
                                                 </div>
                                                 <!-- 标题内容 -->
-                                                <span>{{ map[0] }} ({{ map[1].totalCount }})</span>
+                                                <span>一览 ({{ deck.allCard.length }})</span>
                                             </div>
                                             <!-- 卡牌图标列表 -->
                                             <div class="ColumnGroupCardIcons">
-                                                <div v-for="(card, cardIndex) in map[1].cards ">
-                                                    <div class="ColumnGroupCardIcon"
-                                                        v-if="cardIndex === 0 || (card.id != map[1].cards[cardIndex - 1].id)"
-                                                        :key="cardIndex"
-                                                        :class="{ RepeatCardColumn: cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : true }"
-                                                        :data-id="card.id" style="position: relative;">
-                                                        <!-- cardIndex > 0 ? (card.id != map[1].cards[cardIndex - 1].id) : false -->
-                                                        <CardView :card="card" :data-status="card.cardExtInfo.status"
-                                                            class="CardView" />
-                                                        <CardView :card="card" class="CardView CardIconRepeat"
-                                                            v-if="cardIndex < map[1].cards.length - 1 ? (card.id == map[1].cards[cardIndex + 1].id) : false" />
-
-                                                    </div>
-                                                </div>
-                                                <!-- 隐藏快，用于对齐 -->
-                                                <div v-for="(card, cardIndex) in map[1].cards ">
-                                                    <div style="width: 49.1px;"
-                                                        v-if="cardIndex === 0 || (card.id != map[1].cards[cardIndex - 1].id)">
-                                                    </div>
+                                                <div class="ColumnGroupCardIcon" v-for="(card, index) in deck.allCard"
+                                                    :key="index" @click="selectCard(card)">
+                                                    <CardView :card="card" class="CardView"
+                                                        :data-status="card.cardExtInfo.status" />
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- </div> -->
                                     </div>
-                                </div>
-                                <!-- 一栏栏目 -->
-                                <div class="DeckRowCardContainer OneRead">
-                                    <div class="CardIconColumnContainer">
-                                        <!-- 栏目标题 -->
-                                        <div class="ColumnGroupTitle">
-                                            <!-- 标题图标 -->
-                                            <div class="ColumnGroupTitleIcon">
-                                                <el-icon size="18" color="#ffffff">
-                                                    <Edit />
-                                                </el-icon>
-                                            </div>
-                                            <!-- 标题内容 -->
-                                            <span>一览 ({{ deck.allCard.length }})</span>
-                                        </div>
-                                        <!-- 卡牌图标列表 -->
-                                        <div class="ColumnGroupCardIcons">
-                                            <div class="ColumnGroupCardIcon" v-for="(card, index) in deck.allCard"
-                                                :key="index">
-                                                <CardView :card="card" class="CardView" />
-                                            </div>
-                                        </div>
+                                    <!-- 背景图片 -->
+                                    <div class="FactorCardBg"
+                                        :style="{ backgroundImage: 'url(/src/assets/card/art/preview/small/' + deck.displayLeaderCid + '.jpg)' }">
+                                        <div class="horizontalFade"></div>
+                                        <div class="VerticalTopFade"></div>
+                                        <div class="VerticalBottomFade"></div>
                                     </div>
+                                    <!-- 背景图片 -->
+                                    <div class="FactorDeckBg" :data-faction="deck.factionId"></div>
                                 </div>
+                                <!--  -->
                             </div>
                         </div>
                     </div>
@@ -153,8 +177,8 @@
             </div>
         </div>
     </div>
-    <!-- 卡牌详细信息 -->
-    <CardInfo :card="activeCard.cardInfo" id="CardInfo" />
+    <!-- 卡牌详细信息1 -->
+    <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo"/>
 </template>
 
 <script setup lang="ts">
@@ -163,9 +187,13 @@ import { getAllDeck, getDecksByIds } from '@/api/gwentmirror'
 import { useAllCardStore } from '@/stores/AllCards'
 import { useCardEnumStore } from '@/stores/CardEnum'
 import type { Card } from '@/types/Card'
-import { usrNavStatusStore } from '@/stores/status'
+import { usrNavStatusStore,usrSearchCardBarStatusStore } from '@/stores/status'
 import CardView from './CardView.vue';
+import CardSearchView from './CardSearchView.vue';
 import CardInfo from './CardInfo.vue';
+import { group } from 'console'
+import { format } from 'path'
+import { Edit } from '@element-plus/icons-vue'
 
 
 
@@ -188,6 +216,13 @@ type Deck = {
     allCard: Card[];
     groupCardsByType: Map<string, any>;
     factionRatio: Map<string, string>;
+    // 展示的重要卡牌
+    displayCards: Card[];
+    displayLeaderCid: number;
+    displayStratagemCid: number;
+    deckWebId: number;
+    fromPlayerId: number;
+    factionId: number;
 };
 
 const isAllLoaded = ref(true);
@@ -195,6 +230,8 @@ const scrollContainer = ref<HTMLElement | null>(null);
 const deckListContainer = ref<HTMLElement | null>(null);
 const loadingMore = ref<HTMLElement | null>(null);
 const cardInfoContainer = ref<HTMLElement | null>(null);
+const isClickBody = ref(false);
+
 
 const activeCard = reactive({
     cardInfo: {} as Card
@@ -226,10 +263,18 @@ const fetchData = async () => {
                 allCard: [],
                 groupCardsByType: new Map(),
                 factionRatio: new Map(),
+                displayCards: [],
+                displayLeaderCid: deckJson.leaderCtId,
+                displayStratagemCid: deckJson.stratagemCtId,
+                deckWebId: deckJson.webDeckId,
+                fromPlayerId: deckJson.fromPlayerId,
+                factionId: deckJson.factionId
             }
             deck.allCard = computedAllCard(deck);
             deck.groupCardsByType = computedGroupCardsByType(deck);
             deck.factionRatio = computedFactionRatio(deck);
+            // 应该由后台传来，现在的规则是：p值最高的3~4个
+            deck.displayCards = [deck.allCard[1], deck.allCard[2], deck.allCard[3], deck.allCard[4]];
             decks.push(deck)
         }
         isAllLoaded.value = true;
@@ -256,6 +301,28 @@ const computedAllCard = (deck: Deck) => {
 
 const computedFactionRatio = (deck: Deck) => {
     const countMap = new Map<string, number>()
+    var factionName = ""
+    switch (deck.factionId) {
+        case 2:
+            factionName = allCardEnumStore.FactionEnum.Monster
+            break
+        case 4:
+            factionName = allCardEnumStore.FactionEnum.Nilfgaard
+            break
+        case 8:
+            factionName = allCardEnumStore.FactionEnum.Northern_Realms
+            break
+        case 16:
+            factionName = allCardEnumStore.FactionEnum.Scoiatael
+            break
+        case 32:
+            factionName = allCardEnumStore.FactionEnum.Skellige
+            break
+        case 64:
+            factionName = allCardEnumStore.FactionEnum.Syndicate
+            break
+    }
+    countMap.set(factionName, 0)
     for (const cardItem of deck.allCard) {
         const faction = cardItem.faction!
         if (countMap.has(faction)) {
@@ -276,35 +343,43 @@ const computedFactionRatio = (deck: Deck) => {
 
 const computedGroupCardsByType = (deck: Deck) => {
     var groupMap = new Map<string, { cards: Card[], totalCount: number }>();
-    groupMap.set("stratagem", { cards: [] as Card[], totalCount: 0 })
-    groupMap.set("unit", { cards: [] as Card[], totalCount: 0 })
-    groupMap.set("special", { cards: [] as Card[], totalCount: 0 })
-    groupMap.set("artifact", { cards: [] as Card[], totalCount: 0 })
+    groupMap.set("谋略", { cards: [] as Card[], totalCount: 0 })
+    groupMap.set("单位", { cards: [] as Card[], totalCount: 0 })
+    groupMap.set("特殊", { cards: [] as Card[], totalCount: 0 })
+    groupMap.set("神器", { cards: [] as Card[], totalCount: 0 })
 
     for (let index = 0; index < deck.allCard.length; index++) {
         const card: Card = deck.allCard[index];
         if (card?.type == "stratagem") {
-            let typeGroup = groupMap.get("stratagem")!;
+            let typeGroup = groupMap.get("谋略")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
         }
         if (card?.type == "unit") {
-            let typeGroup = groupMap.get("unit")!;
+            let typeGroup = groupMap.get("单位")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
         }
         if (card?.type == "special") {
-            let typeGroup = groupMap.get("special")!;
+            let typeGroup = groupMap.get("特殊")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
         }
         if (card?.type == "artifact") {
-            let typeGroup = groupMap.get("artifact")!;
+            let typeGroup = groupMap.get("神器")!;
             typeGroup.cards.push(card)
             typeGroup.totalCount = typeGroup.totalCount + 1
         }
     }
+    // 部分卡组sort cid内无谋略卡
+    if (groupMap.get("谋略")?.cards.length == 0) {
+        const stratagemCard: Card = getCardById(deck.displayStratagemCid);
+        let typeGroup = groupMap.get("谋略")!;
+        typeGroup.cards.push(stratagemCard);
+        typeGroup.totalCount = typeGroup.totalCount + 1;
 
+        deck.allCard.unshift(stratagemCard);
+    }
     return groupMap;
 
 };
@@ -366,6 +441,8 @@ onMounted(() => {
     scrollContainer.value?.addEventListener('scroll', loadMore)
     deckListContainer.value?.addEventListener('mouseover', handleCardMouseOver)
     // deckListContainer.value?.addEventListener('mouseout', outCard)
+    document.body.addEventListener('click', ()=> usrSearchCardBarStatusStore().close())
+    usrSearchCardBarStatusStore().close()
 })
 
 const handleCardMouseOver = (event: MouseEvent) => {
@@ -381,33 +458,19 @@ const handleCardMouseOver = (event: MouseEvent) => {
         card = { ...card }
         card.res = "larger"
         activeCard.cardInfo = card;
-        // card.res = "big"
-        
-        
-        var x = event.pageX;
-        var y = event.pageY;
+
         const movingDiv = document.querySelector('#PositionContainer');
-        // console.log("mouse:" + x + "," + y);
         var underElement = getCardByXY(event.clientX, event.clientY)
-        // console.log(movingDiv)
 
         var cardArtElement = underElement;
-        var cardInfoElement = movingDiv.querySelector('.card-info-wrap');
-
-        if (cardArtElement&&cardInfoElement) {
+        var cardInfoElement = movingDiv?.querySelector('.card-info-wrap');
+        if (cardArtElement && cardInfoElement) {
             const artPosition = cardArtElement.getBoundingClientRect()
             const infoPosition = cardInfoElement.getBoundingClientRect()
             var Y = 0
-            // var X = 0
             var X = artPosition.x - artPosition.width / 2;
-            // var centerY = position.top + position.height / 2
-            // var Y = position.y + position.height + 10;
             var screenHeight = window.innerHeight;
             var screenWidth = window.innerWidth;
-            // console.log("pageY:"+window.innerHeight)
-            // console.log("oY:"+position.top + position.height / 2)
-            // console.log("Y:"+Y)
-            console.log( infoPosition.height)
             if (screenHeight > artPosition.top + artPosition.height + infoPosition.height + 30) {
                 Y = artPosition.top + artPosition.height + 10;
                 card.verticalDir = "under"
@@ -415,7 +478,7 @@ const handleCardMouseOver = (event: MouseEvent) => {
                 Y = artPosition.top - artPosition.height * 2 - 10;
                 card.verticalDir = "above"
             }
-            if(screenWidth < artPosition.x + artPosition.width + infoPosition.width + 30){
+            if (screenWidth < artPosition.x + artPosition.width + infoPosition.width + 30) {
                 card.horizontalDir = "left"
             }
             (movingDiv as HTMLElement).style.visibility = 'visible';
@@ -453,9 +516,43 @@ const getCardIdByXY = (x: number, y: number) => {
         return -1
     }
 }
-// 监听器
 
-</script>
+const selectCard = (card: Card) => {
+    if (card.cardExtInfo.status == allCardEnumStore.BorderStyleEnum.Selected) {
+        card.cardExtInfo.status = allCardEnumStore.BorderStyleEnum.Normal;
+        var ids = form.ids.split(',')
+        ids.pop()
+        form.ids = ids.join(',')
+    } else {
+        card.cardExtInfo.status = allCardEnumStore.BorderStyleEnum.Selected;
+        form.ids += ("," + card.id)
+    }
+
+    // 刷新
+    form.page = 1
+
+    // decks.length = 0
+    let i = 0
+    while (i < decks.length) {
+        let deck = decks[i]
+        let count = 0
+        let uniqueArr = [...new Set(deck.allCard)];
+        uniqueArr.forEach(card => {
+            count += card.cardExtInfo.status == allCardEnumStore.BorderStyleEnum.Selected ? 1 : 0;
+        })
+        if (count != form.ids.split(',').length) {
+
+            console.log(deck.deckName)
+            decks.splice(decks.indexOf(deck), 1)
+        } else {
+            i++
+        }
+    }
+    decks.length = 0
+    fetchData()
+}
+
+</script >
 <style>
 * {
     box-sizing: inherit;
@@ -518,7 +615,6 @@ const getCardIdByXY = (x: number, y: number) => {
 }
 
 #SearchFormContainer input {
-    padding: 10px;
     font-size: 16px;
     border: none;
     outline: none;
@@ -594,7 +690,7 @@ const getCardIdByXY = (x: number, y: number) => {
 .DecksListRowContainer {
     /* height: 230px; */
     left: 0px;
-    /* position: absolute; */
+    position: relative;
     top: 0px;
     width: 100%;
     margin-top: 20px;
@@ -618,45 +714,75 @@ const getCardIdByXY = (x: number, y: number) => {
 }
 
 .DeckRowFactionBar[data-faction="neutral"] {
-    background-color: rgb(236, 152, 56);
-    background-image: url("/src/assets/other/FactionBg/neutral.png");
+    background-color: rgb(217 213 193);
+    /* background-image: url("/src/assets/other/FactionBg/neutral.png"); */
 }
 
 .DeckRowFactionBar[data-faction="skellige"] {
-    background-image: url("/src/assets/other/FactionBg/skellige.png");
+    /* background-image: url("/src/assets/other/FactionBg/skellige.png"); */
+    background-color: #341a7a;
     opacity: .8;
 }
 
 .DeckRowFactionBar[data-faction="northern_realms"] {
-    background-image: url("/src/assets/other/FactionBg/northern_realms.png");
+    /* background-image: url("/src/assets/other/FactionBg/northern_realms.png"); */
+    background-color: #184d8b;
     opacity: .8;
 }
 
 .DeckRowFactionBar[data-faction="nilfgaard"] {
-    background-image: url("/src/assets/other/FactionBg/nilfgaard.png");
+    /* background-image: url("/src/assets/other/FactionBg/nilfgaard.png"); */
+    background-color: #020100;
     opacity: .8;
 }
 
 .DeckRowFactionBar[data-faction="syndicate"] {
-    background-image: url("/src/assets/other/FactionBg/syndicate.png");
+    /* background-image: url("/src/assets/other/FactionBg/syndicate.png"); */
+    background-color: #d37a00;
     opacity: .8;
 }
 
 .DeckRowFactionBar[data-faction="monster"] {
-    background-image: url("/src/assets/other/FactionBg/monster.png");
+    /* background-image: url("/src/assets/other/FactionBg/monster.png"); */
+    background-color: #ab0e0e;
     opacity: .8;
 }
 
 .DeckRowFactionBar[data-faction="scoiatael"] {
-    background-image: url("/src/assets/other/FactionBg/scoiatael.png");
+    /* background-image: url("/src/assets/other/FactionBg/scoiatael.png"); */
+    background-color: #2d7a2a;
     opacity: .8;
+}
+
+.FactorDeckBg[data-faction="2"] {
+    background-image: url('/src/assets/card/art/preview/factor/monsters-bg.jpg');
+}
+
+.FactorDeckBg[data-faction="4"] {
+    background-image: url('/src/assets/card/art/preview/factor/nilf-bg.jpg');
+}
+
+.FactorDeckBg[data-faction="8"] {
+    background-image: url('/src/assets/card/art/preview/factor/northern-bg.jpg');
+}
+
+.FactorDeckBg[data-faction="16"] {
+    background-image: url('/src/assets/card/art/preview/factor/scoia-bg.jpg');
+}
+
+.FactorDeckBg[data-faction="32"] {
+    background-image: url('/src/assets/card/art/preview/factor/skellige-bg.jpg');
+}
+
+.FactorDeckBg[data-faction="64"] {
+    background-image: url('/src/assets/card/art/preview/factor/syndicate-bg.jpg');
 }
 
 .DeckRow_Top {
     position: relative;
     overflow: hidden;
     display: flex;
-    padding: 10px 30px;
+    padding: 10px 20px;
     min-height: 100px;
     -webkit-box-pack: justify;
     justify-content: space-between;
@@ -682,14 +808,91 @@ const getCardIdByXY = (x: number, y: number) => {
     margin-top: -1px;
 }
 
+
+.DecksListRowContainer .DeckBgContainer {
+    /* background: #ccc; */
+    /* width: 100%; */
+    /* background-image: url("/src/assets/card/art/preview/small/202953.jpg"); */
+    width: 100%;
+    position: relative;
+    /* height: 400px; */
+    /* clip-path: polygon(0px 0px, 337px 0px, 358px 98px, 0px 98px); */
+    /* opacity: .1; */
+    /* position: absolute; */
+
+}
+
+.FactorDeckBg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 0 -15px;
+
+}
+
+.DecksListRowContainer .DeckBgContainer .FactorCardBg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 60%;
+    height: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 0 0px;
+    -webkit-mask-image: -webkit-gradient(linear, left top, right top, color-stop(0, transparent), color-stop(5%, transparent), color-stop(25%, #000), color-stop(100%, #000));
+
+}
+
+.FactorCardBg .horizontalFade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(98deg, rgb(38, 35, 33) 10%, hsl(0deg 0% 100% / 0%) 50%, rgb(38, 35, 33) 90%, rgb(38, 35, 33) 100%);
+}
+
+.FactorCardBg .VerticalTopFade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgb(38, 35, 33) 10px, hsl(0deg 0% 100% / 0%) 60px, hsl(0deg 0% 100% / 0%) 80%, rgb(38, 35, 33) 100%);
+}
+
+.FactorCardBg .VerticalBottomFade {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, hsl(0deg 0% 100% / 0%) 60px, hsl(0deg 0% 100% / 0%) 80%, rgb(38, 35, 33) 100%);
+}
+
 .DeckRow_Top .DeckRow_ArtFade {
     position: absolute;
     z-index: -1;
-    width: 40%;
+    width: 10%;
     top: 0px;
     right: 0px;
     height: 100%;
     background: linear-gradient(to right, transparent 0px, rgba(16, 16, 16, .99) 80%);
+}
+
+.DeckRow_Top .DeckRow_ArtFade_left {
+    position: absolute;
+    z-index: -1;
+    width: 10%;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    background: linear-gradient(to left, transparent 0px, rgba(16, 16, 16, .99) 80%);
 }
 
 .DeckRow_Top .DeckRow_Left {
@@ -743,6 +946,11 @@ const getCardIdByXY = (x: number, y: number) => {
     flex-direction: column;
     flex: 1 1 0%;
     margin-right: 10px;
+    overflow: hidden;
+    word-break: keep-all;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .DeckRowInfoContainer span {
@@ -756,8 +964,9 @@ const getCardIdByXY = (x: number, y: number) => {
 
 .DeckRowCardContainer {
     display: flex;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgb(34, 31, 30);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(34, 31, 30, 0.45);
+    z-index: 1;
     position: relative;
 }
 
@@ -766,10 +975,12 @@ const getCardIdByXY = (x: number, y: number) => {
     overflow-x: auto;
     display: flex;
     min-height: 107px;
+    z-index: 1;
     align-items: flex-start;
 }
 
 .DeckRowCardContainerInner {
+    z-index: 1;
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -779,12 +990,14 @@ const getCardIdByXY = (x: number, y: number) => {
 .CardIconColumnContainer {
     display: flex;
     flex-direction: column;
-
-
-
     padding: 7px 15px;
-    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+.DeckRowCardContainerInner .CardIconColumnContainer:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 
 .ColumnGroupCardIcons {
     display: flex;
@@ -885,6 +1098,7 @@ const getCardIdByXY = (x: number, y: number) => {
 }
 
 .OneRead {
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -913,5 +1127,10 @@ const getCardIdByXY = (x: number, y: number) => {
 .TypeIconContainer {
     width: 25px;
     height: 25px;
+}
+
+.DeckIcoContainer img {
+    width: 90px;
+    padding-right: 15px;
 }
 </style>

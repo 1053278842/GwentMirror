@@ -23,7 +23,7 @@ const CardType = CardEnumStore.CardTypeEnum
 </script>
 
 <template>
-  <li v-for="(card, index) in allCardStore.cardData">
+  <li v-for="(card, index) in allCardStore.cardData.splice(0,10)">
     <div id="card-listing">
       <div class="card-wrap card-data" data-res="medium" :data-id=card.id data-artid="3817j" :data-power=card.power
         :data-armor=card.armor :data-provision=card.provision :data-faction=card.faction data-set="cursed toad"

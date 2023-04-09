@@ -15,7 +15,7 @@ const props = defineProps({
 <template>
     <div>
         <div id="PositionContainer"  >
-            <CardView :card="card" />
+            <CardView :card="card" :size="'larger'" />
         </div>
     </div>
 </template>
@@ -23,9 +23,9 @@ const props = defineProps({
 <style scoped>
 #PositionContainer {
     position: absolute;
-    top: 0;
-    left: 0;
-    transition: ease;
+    top: -99px;
+    left: -99px;
+    /* transition: ease; */
 }
 </style>
 

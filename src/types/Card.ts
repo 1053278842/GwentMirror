@@ -29,4 +29,3 @@ export type CardExtInfo = {
     status:string
 }
 
-

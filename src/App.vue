@@ -16,7 +16,11 @@ useNavStatus.openNav()
 </template>
 
 <style>
-
+html, body, #app {
+    box-sizing: border-box;
+    height: 100%;
+    overflow: hidden;
+}
 /* header {
   line-height: 1.5;
   max-height: 100vh;

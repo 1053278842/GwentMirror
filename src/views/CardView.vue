@@ -13,14 +13,22 @@ const props = defineProps({
     type: Object as () => Card,
     required: true
   },
+  size: {
+    type: Object as () => string,
+    required: false
+  },
 });
+var sizeType =props.card.res
+if(props.size){
+  sizeType = props.size
+}
 // const {card} = toRefs(props);
 //悬停展示信息
 </script>
 
 <template>
   <div id="card-listing">
-    <div class="card-wrap card-data" :data-res=card.res :data-id=card.id data-artid="3817j" :data-power=card.power
+    <div class="card-wrap card-data" :data-res=sizeType :data-id=card.id data-artid="3817j" :data-power=card.power
       :data-armor=card.armor :data-provision=card.provision :data-faction=card.faction data-set="cursed toad"
       :data-color=card.color :data-type=card.type :data-rarity=card.rarity 
       :data-vertical-dir="card.verticalDir" :data-horizontal-dir="card.horizontalDir">
@@ -42,7 +50,8 @@ const props = defineProps({
       </div>
 
       <div class="card-art-wrap ">
-        <a href="https://gwent.one/cn/card/202793">
+        <a href="#">
+          <!-- <a href="https://gwent.one/cn/card/202793"></a> -->
           <div class="card-image-wrap">
             <!-- "'@\assets\card\art\preview\big\'+card.id+'.jpg'" -->
             <div class="card_asset-img">
@@ -74,7 +83,7 @@ const props = defineProps({
 <style>
 
 .card-wrap {
-  display: flex;
+  /* display: flex; */
   flex-direction: row-reverse;
   flex-wrap: wrap;
   position: relative;
@@ -88,7 +97,7 @@ const props = defineProps({
   margin-left: 2px;
   pointer-events: none;
   position: absolute;
-  z-index: 20;
+  /* z-index: 1; */
 }
 
 .card-data[data-res=larger][data-vertical-dir="under"] .card-info-wrap {
@@ -481,6 +490,16 @@ div[class*=card_asset] {
 }
 
 /* 定死大小 */
+.card-data[data-res=small] .card-image-wrap,
+.card-data[data-res=small] img {
+  /* width: 249px;
+  height: 357px; */
+  width: 24.5px;
+  height: 35px;
+}
+
+
+/* 定死大小 */
 .card-data[data-res=medium] .card-image-wrap,
 .card-data[data-res=medium] img {
   /* width: 249px;
@@ -499,12 +518,10 @@ div[class*=card_asset] {
 }
 
 
-.db-small .card-image-wrap {
-  /* width: 150px !important;
-  height: 215px !important; */
+/* .db-small .card-image-wrap {
   width: 30px !important;
   height: 42px !important;
-}
+} */
 
 .card-image-wrap,
 .card-relation-image-wrap {
