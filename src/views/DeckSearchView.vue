@@ -8,7 +8,7 @@
                 <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[
                     item.id1,
                 ]" :data-index="index" :data-active="active"
-                    :title="`Click to change message ${index}`" class="message">
+                    :title="`当前Deck索引: ${index}`" class="message">
                     <div id="PageContainer">
                         <div id="PageContainerInner">
                             <!-- 卡牌搜索框 -->
@@ -45,7 +45,7 @@
                         </div>
                     </div>
 
-                    <div v-if="index == decks.length-1" ref="loadingMore" style="height: 200px; text-align: center;margin-top: 15px;">
+                    <div v-if="index == decks.length-1" ref="loadingMore" style="height: 250px; text-align: center;margin-top: 15px;">
                         <div  style="font-size: 24px;">
                             <el-icon class="is-loading primary">
                                 <ToiletPaper />

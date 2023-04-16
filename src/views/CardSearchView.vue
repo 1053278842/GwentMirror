@@ -1,7 +1,25 @@
 <template>
-    <el-icon size="20" color="#409EFC" class="is-loading" id="SearchIcon">
-        <Edit />
-    </el-icon>
+    <div class="SelectCardItemTokenContainer">
+        <el-icon size="20" color="#409EFC" class="is-loading" id="SearchIcon">
+            <Edit />
+        </el-icon>
+        <div class="SelectCardItemToken">
+            <div class="CardToken card-data" :data-id="allCard[18].id" >
+                <CardView :card="allCard[0]" :size="'small'"></CardView>
+                <div class="deleteToken">
+                    <div class="deleteIco">
+                        <el-icon size="14" color="#fff" >
+                            <Delete />
+                        </el-icon>
+                    </div>
+                </div>
+            </div>
+            <div class="CardToken">
+                <CardView :card="allCard[18]" :size="'small'"></CardView>
+            </div>
+
+        </div>
+    </div>
     <input placeholder="Please input card ids!"
         @click="usrSearchCardBarStatusStore().showed = !usrSearchCardBarStatusStore().showed" @click.stop>
 
@@ -17,8 +35,7 @@
                     <ul>
                         <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[
                             item.name,
-                        ]" :data-index="index" :data-active="active" :title="`Click to change message ${index}`"
-                            class="message">
+                        ]" :data-index="index" :data-active="active" :title="`当前Card索引: ${index}`" class="message">
                             <CardView :card="item" :size="'small'"></CardView>
                             <span>{{ item.name }}</span>
                         </DynamicScrollerItem>
@@ -64,6 +81,10 @@ function onUpdate(viewStartIndex: number, viewEndIndex: number, visibleStartInde
   
   
 <style scoped>
+#SearchIcon {
+    margin-right: 10px;
+}
+
 input {
     padding: 25px 20px;
 }
@@ -139,5 +160,46 @@ input {
     font-size: 14px;
     color: rgb(125, 125, 125);
     margin-left: 10px;
+}
+
+.ShowList ul {
+    cursor: pointer;
+}
+
+.SelectCardItemTokenContainer {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+.SelectCardItemToken {
+    display: flex;
+    flex-direction: row;
+}
+
+.CardToken {
+    margin-right: 10px;
+    position: relative;
+}
+
+.CardToken:hover .deleteToken {
+    opacity: 1;
+}
+
+.deleteToken{
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    background-color: brown;
+    width: 100%;
+    height:100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+}
+ .deleteIco {
+    position: absolute;
+    top: calc(50% - 10px);
+    left: calc(50% - 7px);
 }
 </style>
