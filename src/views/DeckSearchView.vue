@@ -34,11 +34,6 @@
                             <!-- 预览列表 -->
                             <div id="DeckListGridContainer" >
                                 <div id="DeckListGridContainerInner">
-                                    <!-- <div class="DecksListRowContainer" v-for="(deck, index) in decks" :key="index"> -->
-
-
-                                <!-- <CardView :card="item" :size="'small'"></CardView>
-                                                            <span>{{ item.name }}</span> -->
                                     <DeckView :item="item" :select-card="selectCard"></DeckView>
                                 </div>
                             </div>

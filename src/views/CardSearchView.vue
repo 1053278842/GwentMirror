@@ -4,20 +4,18 @@
             <Edit />
         </el-icon>
         <div class="SelectCardItemToken">
-            <div class="CardToken card-data" :data-id="allCard[18].id" >
-                <CardView :card="allCard[0]" :size="'small'"></CardView>
-                <div class="deleteToken">
-                    <div class="deleteIco">
-                        <el-icon size="14" color="#fff" >
-                            <Delete />
-                        </el-icon>
+            <div v-for="(card,index) in selectedCard" :key="index">
+                <div class="CardToken card-data" :data-id="card.id">
+                    <CardView :card="card" :size="'small'"></CardView>
+                    <div class="deleteToken" @click="remove(card as Card)">
+                        <div class="deleteIco">
+                            <el-icon size="14" color="#fff"> 
+                                <Delete />
+                            </el-icon>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="CardToken">
-                <CardView :card="allCard[18]" :size="'small'"></CardView>
-            </div>
-
         </div>
     </div>
     <input placeholder="Please input card ids!"
@@ -32,7 +30,7 @@
             <DynamicScroller :items="filteredItems" :min-item-size="54" :emit-update="true" class="scroller ShowList"
                 @resize="onResize" @update="onUpdate">
                 <template #default="{ item, index, active }">
-                    <ul>
+                    <ul @click="add(item)">
                         <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[
                             item.name,
                         ]" :data-index="index" :data-active="active" :title="`当前Card索引: ${index}`" class="message">
@@ -51,15 +49,20 @@ import { ref, computed } from 'vue';
 import { usrSearchCardBarStatusStore } from '@/stores/status';
 import CardView from './CardView.vue';
 import { useAllCardStore } from '@/stores/AllCards';
+import { useSelectedCardsStore } from '@/stores/UserOperationStore';
+import { Card } from '@/types/Card';
 useAllCardStore().initCardData()
 const allCardStore = useAllCardStore();
 
+const { selectedCard, remove, add } = useSelectedCardsStore();
 const allCard = useAllCardStore().cardData;
+
 const data = ref({
     allCard,
     search: '',
     updateParts: { viewStartIdx: 0, viewEndIdx: 0, visibleStartIdx: 0, visibleEndIdx: 0 },
 });
+
 const filteredItems = computed(() => {
     const { search, allCard } = data.value;
     if (!search) return allCard;
@@ -75,6 +78,10 @@ function onUpdate(viewStartIndex: number, viewEndIndex: number, visibleStartInde
     data.value.updateParts.viewEndIdx = viewEndIndex
     data.value.updateParts.visibleStartIdx = visibleStartIndex
     data.value.updateParts.visibleEndIdx = visibleEndIndex
+}
+
+const deleteClick = (card:Card) =>{
+    // useSelectedCardsStore().remove(card)
 }
 </script>
   
@@ -186,18 +193,19 @@ input {
     opacity: 1;
 }
 
-.deleteToken{
+.deleteToken {
     opacity: 0;
     transition: opacity 0.5s ease-in-out;
     background-color: brown;
     width: 100%;
-    height:100%;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
     cursor: pointer;
 }
- .deleteIco {
+
+.deleteIco {
     position: absolute;
     top: calc(50% - 10px);
     left: calc(50% - 7px);
