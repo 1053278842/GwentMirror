@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    <input placeholder="Please input card ids!"
+    <input placeholder="Please input card ids!" v-model="data.search"
         @click="usrSearchCardBarStatusStore().showed = !usrSearchCardBarStatusStore().showed" @click.stop>
 
     <div class="CardSearchExtShowContainer" v-show="usrSearchCardBarStatusStore().showed">
@@ -66,6 +66,7 @@ const data = ref({
 const filteredItems = computed(() => {
     const { search, allCard } = data.value;
     if (!search) return allCard;
+    usrSearchCardBarStatusStore().open()
     const lowerCaseSearch = search.toLowerCase();
     return allCard.filter(i => i.name.toLowerCase().includes(lowerCaseSearch));
 });
@@ -143,7 +144,7 @@ input {
 }
 
 .ShowList {
-    overflow: scroll;
+    /* overflow: scroll; */
 }
 
 .ShowList .message {

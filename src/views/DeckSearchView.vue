@@ -71,7 +71,7 @@ import CardView from './CardView.vue';
 import CardSearchView from './CardSearchView.vue';
 import CardInfo from './CardInfo.vue';
 import DeckView from './DeckView.vue';
-
+import { useSelectedCardsStore } from '@/stores/UserOperationStore';
 
 // usrNavStatusStore().closeNav()
 const allCardEnumStore = useCardEnumStore()
@@ -114,6 +114,8 @@ const fetchData = () => {
         ids: form.ids,
         page: form.page
     }
+    param.ids = useSelectedCardsStore().selectedCard.map(card => card.id).join(",")
+    param.ids = "203222,203197,202824"
     param.page = 0
     console.log("异步发送请求!列表数据请求中！当前page:" + form.page)
     // 发送 axios 请求获取数据
@@ -145,7 +147,6 @@ const fetchData = () => {
 
             decks.push(deck)
         }
-
 
         isAllLoaded.value = true;
     })
@@ -332,9 +333,6 @@ const selectCard = (card: Card) => {
         card.cardExtInfo.status = allCardEnumStore.BorderStyleEnum.Selected;
         form.ids += ("," + card.id)
     }
-
-    // 刷新
-    form.page = 1
 
     // decks.length = 0
     let i = 0
