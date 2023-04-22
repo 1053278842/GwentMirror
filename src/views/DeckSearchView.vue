@@ -106,7 +106,8 @@ const decks = reactive([] as Deck[])
 
 // 输入
 var form = reactive({} as SearchParam)
-form.ids = "152309"
+form.ids = "203213"
+useSelectedCardsStore().add(allCardDataMap.get(203213))
 form.page = 1
 
 const fetchData = () => {
@@ -115,7 +116,7 @@ const fetchData = () => {
         page: form.page
     }
     param.ids = useSelectedCardsStore().selectedCard.map(card => card.id).join(",")
-    param.ids = "203222,203197,202824"
+    // param.ids = "203213"
     param.page = 0
     console.log("异步发送请求!列表数据请求中！当前page:" + form.page)
     // 发送 axios 请求获取数据
