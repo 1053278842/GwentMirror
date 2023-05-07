@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import { defineProps, toRefs } from 'vue';
-import type { Card } from '@/types/Card'
-import { useCardEnumStore } from '@/stores/CardEnum'
+import { defineProps, toRefs } from "vue";
+import type { Card } from "@/types/Card";
+import { useCardEnumStore } from "@/stores/CardEnum";
 
-const CardEnumStore = useCardEnumStore()
-const BorderColor = CardEnumStore.BorderColorEnum
-const Rarity = CardEnumStore.RarityEnum
-const Faction = CardEnumStore.FactionEnum
-const CardType = CardEnumStore.CardTypeEnum
+const CardEnumStore = useCardEnumStore();
+const BorderColor = CardEnumStore.BorderColorEnum;
+const Rarity = CardEnumStore.RarityEnum;
+const Faction = CardEnumStore.FactionEnum;
+const CardType = CardEnumStore.CardTypeEnum;
 const props = defineProps({
   card: {
     type: Object as () => Card,
-    required: true
+    required: true,
   },
   size: {
     type: Object as () => string,
-    required: false
+    required: false,
   },
 });
-var sizeType =props.card.res
-if(props.size){
-  sizeType = props.size
+var sizeType = props.card.res;
+if (props.size) {
+  sizeType = props.size;
 }
 // const {card} = toRefs(props);
 //悬停展示信息
@@ -28,12 +28,27 @@ if(props.size){
 
 <template>
   <div id="card-listing">
-    <div class="card-wrap card-data" :data-res=sizeType :data-id=card.id data-artid="3817j" :data-power=card.power
-      :data-armor=card.armor :data-provision=card.provision :data-faction=card.faction data-set="cursed toad"
-      :data-color=card.color :data-type=card.type :data-rarity=card.rarity 
-      :data-vertical-dir="card.verticalDir" :data-horizontal-dir="card.horizontalDir">
+    <div
+      class="card-wrap card-data"
+      :data-res=sizeType
+      :data-id=card.id
+      data-artid="3817j"
+      :data-power=card.power
+      :data-armor=card.armor
+      :data-provision=card.provision
+      :data-faction=card.faction
+      data-set="cursed toad"
+      :data-color=card.color
+      :data-type=card.type
+      :data-rarity=card.rarity
+      :data-vertical-dir="card.verticalDir"
+      :data-horizontal-dir="card.horizontalDir"
+    >
 
-      <div class="card-info-wrap" v-if="card.res == 'larger'">
+      <div
+        class="card-info-wrap"
+        v-if="card.res == 'larger'"
+      >
         <div class="card-head">
           <div class="card-name">{{ card.name }}</div>
           <div class="card-category">{{ card.categories }}</div>
@@ -55,16 +70,28 @@ if(props.size){
           <div class="card-image-wrap">
             <!-- "'@\assets\card\art\preview\big\'+card.id+'.jpg'" -->
             <div class="card_asset-img">
-              <img loading="lazy" :src="card.imgUrl">
+              <img
+                loading="lazy"
+                :src="card.imgUrl"
+              >
 
             </div>
             <div class="card_asset-border"></div>
 
-            <div class="card_asset-armor-icon" v-if="card.armor != '0'">
+            <div
+              class="card_asset-armor-icon"
+              v-if="card.armor != '0'"
+            >
               <div class="card_asset-armor"></div>
             </div>
-            <div class="card_asset-provision-icon" v-if="card.type != CardType.Stratagem"></div>
-            <div class="card_asset-provision-bg" v-if="card.type != CardType.Stratagem">
+            <div
+              class="card_asset-provision-icon"
+              v-if="card.type != CardType.Stratagem"
+            ></div>
+            <div
+              class="card_asset-provision-bg"
+              v-if="card.type != CardType.Stratagem"
+            >
               <div class="card_asset-provision"></div>
             </div>
             <div class="card_asset-banner">
@@ -81,7 +108,6 @@ if(props.size){
 </template>
 
 <style>
-
 .card-wrap {
   /* display: flex; */
   flex-direction: row-reverse;
@@ -90,7 +116,6 @@ if(props.size){
 }
 
 .card-info-wrap {
-  
   width: 200px;
   display: flex;
   flex-flow: row wrap;
@@ -100,20 +125,20 @@ if(props.size){
   /* z-index: 1; */
 }
 
-.card-data[data-res=larger][data-vertical-dir="under"] .card-info-wrap {
-  top: 0!important;
+.card-data[data-res="larger"][data-vertical-dir="under"] .card-info-wrap {
+  top: 0 !important;
 }
 
-.card-data[data-res=larger][data-vertical-dir="above"] .card-info-wrap {
-  bottom: 0!important;
+.card-data[data-res="larger"][data-vertical-dir="above"] .card-info-wrap {
+  bottom: 0 !important;
 }
 
-.card-data[data-res=larger][data-horizontal-dir="left"] .card-info-wrap{
-  right: 100px!important;
+.card-data[data-res="larger"][data-horizontal-dir="left"] .card-info-wrap {
+  right: 100px !important;
 }
 
-.card-data[data-res=larger][data-horizontal-dir="right"] .card-info-wrap{
-  left: 100px!important;
+.card-data[data-res="larger"][data-horizontal-dir="right"] .card-info-wrap {
+  left: 100px !important;
 }
 
 .card-info-wrap .card-head {
@@ -141,7 +166,7 @@ if(props.size){
   font-family: HalisGR-Light, sans-serif;
 }
 
-.card-info-wrap .card-head .card-name  {
+.card-info-wrap .card-head .card-name {
   flex: 1 0 100%;
   font-size: 18px;
   line-height: 13px;
@@ -196,7 +221,7 @@ if(props.size){
   margin: 0px auto;
 }
 
-.card-body .card-body-ability .keyword{
+.card-body .card-body-ability .keyword {
   color: rgb(34, 29, 22);
   font-size: 14px;
   line-height: 18px;
@@ -251,7 +276,6 @@ if(props.size){
 .card-data .card_asset-provision-icon {
   background-image: url("/src/assets/card/art/preview/banner/provision_icon.png");
 }
-
 
 .card-data[data-power="1"] .card_asset-power {
   background-image: url("/src/assets/card/art/preview/number/power_01.png");
@@ -310,11 +334,11 @@ if(props.size){
 }
 
 /* 边框 */
-.card-data[data-color=bronze] .card_asset-border {
+.card-data[data-color="bronze"] .card_asset-border {
   background-image: url("/src/assets/card/art/preview/other/border_bronze.png");
 }
 
-.card-data[data-color=gold] .card_asset-border {
+.card-data[data-color="gold"] .card_asset-border {
   background-image: url("/src/assets/card/art/preview/other/border_gold.png");
 }
 
@@ -396,91 +420,88 @@ if(props.size){
 }
 
 /* rarity */
-.card-data[data-rarity=common] .card_asset-rarity {
+.card-data[data-rarity="common"] .card_asset-rarity {
   background-image: url("src/assets/card/art/preview/other/rarity_common.png");
 }
 
-.card-data[data-rarity=rare] .card_asset-rarity {
+.card-data[data-rarity="rare"] .card_asset-rarity {
   background-image: url("src/assets/card/art/preview/other/rarity_rare.png");
 }
 
-.card-data[data-rarity=epic] .card_asset-rarity {
+.card-data[data-rarity="epic"] .card_asset-rarity {
   background-image: url("src/assets/card/art/preview/other/rarity_epic.png");
 }
 
-.card-data[data-rarity=legendary] .card_asset-rarity {
+.card-data[data-rarity="legendary"] .card_asset-rarity {
   background-image: url("src/assets/card/art/preview/other/rarity_legendary.png");
 }
 
-
 /* 装饰品 */
-.card-data[data-type=special] .card_asset-trinket {
+.card-data[data-type="special"] .card_asset-trinket {
   background-image: url("src/assets/card/art/preview/other/trinket_special.png");
 }
 
-.card-data[data-type=stratagem] .card_asset-trinket {
+.card-data[data-type="stratagem"] .card_asset-trinket {
   background-image: url("src/assets/card/art/preview/other/trinket_stratagem.png");
 }
 
-.card-data[data-type=artifact] .card_asset-trinket {
+.card-data[data-type="artifact"] .card_asset-trinket {
   background-image: url("src/assets/card/art/preview/other/trinket_artifact.png");
 }
 
 .card_asset-banner {
   background-image: url("src/assets/card/art/preview/banner/default_nilfgaard.png");
-
 }
 
-.card-data[data-faction=scoiatael] .card_asset-banner {
+.card-data[data-faction="scoiatael"] .card_asset-banner {
   background-image: url("src/assets/card/art/preview/banner/default_scoiatael.png");
 }
 
-.card-data[data-faction=skellige] .card_asset-banner {
+.card-data[data-faction="skellige"] .card_asset-banner {
   background-image: url("src/assets/card/art/preview/banner/default_skellige.png");
 }
 
-.card-data[data-faction=neutral] .card_asset-banner {
+.card-data[data-faction="neutral"] .card_asset-banner {
   background-image: url("src/assets/card/art/preview/banner/default_neutral.png");
 }
 
-.card-data[data-faction=monster] .card_asset-banner {
+.card-data[data-faction="monster"] .card_asset-banner {
   background-image: url("src/assets/card/art/preview/banner/default_monster.png");
 }
 
-.card-data[data-faction=nilfgaard] .card_asset-banner {
+.card-data[data-faction="nilfgaard"] .card_asset-banner {
   background-image: url("src/assets/card/art/preview/banner/default_nilfgaard.png");
 }
 
-.card-data[data-faction=syndicate] .card_asset-banner {
+.card-data[data-faction="syndicate"] .card_asset-banner {
   background-image: url("src/assets/card/art/preview/banner/default_syndicate.png");
 }
 
-
-.card-data[data-faction=skellige] .card_asset-provision-bg {
+.card-data[data-faction="skellige"] .card_asset-provision-bg {
   background-image: url("src/assets/card/art/preview/banner/provision_skellige.png");
 }
 
-.card-data[data-faction=nilfgarrd] .card_asset-provision-bg {
+.card-data[data-faction="nilfgarrd"] .card_asset-provision-bg {
   background-image: url("src/assets/card/art/preview/banner/provision_nilfgaard.png");
 }
 
-.card-data[data-faction=syndicate] .card_asset-provision-bg {
+.card-data[data-faction="syndicate"] .card_asset-provision-bg {
   background-image: url("src/assets/card/art/preview/banner/provision_syndicate.png");
 }
 
-.card-data[data-faction=monster] .card_asset-provision-bg {
+.card-data[data-faction="monster"] .card_asset-provision-bg {
   background-image: url("src/assets/card/art/preview/banner/provision_monster.png");
 }
 
-.card-data[data-faction=scoiatael] .card_asset-provision-bg {
+.card-data[data-faction="scoiatael"] .card_asset-provision-bg {
   background-image: url("src/assets/card/art/preview/banner/provision_scoiatael.png");
 }
 
-.card-data[data-faction=neutral] .card_asset-provision-bg {
+.card-data[data-faction="neutral"] .card_asset-provision-bg {
   background-image: url("src/assets/card/art/preview/banner/provision_neutral.png");
 }
 
-div[class*=card_asset] {
+div[class*="card_asset"] {
   background-repeat: no-repeat;
   background-size: contain;
   position: absolute;
@@ -490,18 +511,17 @@ div[class*=card_asset] {
 }
 
 /* 定死大小 */
-.card-data[data-res=small] .card-image-wrap,
-.card-data[data-res=small] img {
+.card-data[data-res="small"] .card-image-wrap,
+.card-data[data-res="small"] img {
   /* width: 249px;
   height: 357px; */
   width: 24.5px;
   height: 35px;
 }
 
-
 /* 定死大小 */
-.card-data[data-res=medium] .card-image-wrap,
-.card-data[data-res=medium] img {
+.card-data[data-res="medium"] .card-image-wrap,
+.card-data[data-res="medium"] img {
   /* width: 249px;
   height: 357px; */
   width: 49px;
@@ -509,14 +529,13 @@ div[class*=card_asset] {
 }
 
 /* 定死大小 */
-.card-data[data-res=larger] .card-image-wrap,
-.card-data[data-res=larger] img {
+.card-data[data-res="larger"] .card-image-wrap,
+.card-data[data-res="larger"] img {
   /* width: 249px;
   height: 357px; */
   width: 98.2px;
   height: 140px;
 }
-
 
 /* .db-small .card-image-wrap {
   width: 30px !important;
