@@ -28,7 +28,7 @@
                 <span class="CardNumber">{{ allCardStore.cardData.length }}</span>
             </div>
             <DynamicScroller :items="filteredItems" :min-item-size="54" :emit-update="true" class="scroller ShowList"
-                @resize="onResize" @update="onUpdate">
+                @update="onUpdate">
                 <template #default="{ item, index, active }">
                     <ul @click="add(item)">
                         <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[
@@ -70,9 +70,6 @@ const filteredItems = computed(() => {
     const lowerCaseSearch = search.toLowerCase();
     return allCard.filter(i => i.name.toLowerCase().includes(lowerCaseSearch));
 });
-function onResize() {
-    console.log('resize')
-}
 
 function onUpdate(viewStartIndex: number, viewEndIndex: number, visibleStartIndex: number, visibleEndIndex: number) {
     data.value.updateParts.viewStartIdx = viewStartIndex
@@ -81,9 +78,6 @@ function onUpdate(viewStartIndex: number, viewEndIndex: number, visibleStartInde
     data.value.updateParts.visibleEndIdx = visibleEndIndex
 }
 
-const deleteClick = (card:Card) =>{
-    // useSelectedCardsStore().remove(card)
-}
 </script>
   
   

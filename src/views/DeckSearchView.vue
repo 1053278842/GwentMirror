@@ -15,14 +15,6 @@
                             <form :model="form" id="SearchFormContainer" @submit.prevent v-if="index == 0">
                                 <CardSearchView></CardSearchView>
                             </form>
-                            <br v-if="index == 0">
-                            <!-- 卡组搜索框 -->
-                            <form :model="form" @submit.prevent="fetchData" id="SearchFormContainer" v-if="index == 0">
-                                <el-icon size="20" color="#409EFC" class="is-loading" id="SearchIcon">
-                                    <Aim />
-                                </el-icon>
-                                <input v-model="form.ids" placeholder="Please input card ids!" @change="SearchOnChange">
-                            </form>
                             <hr v-if="index == 0">
                             <!-- 搜索结果 -->
                             <div id="DecksListResult" v-if="index == 0">
@@ -106,18 +98,18 @@ const decks = reactive([] as Deck[])
 
 // 输入
 var form = reactive({} as SearchParam)
-form.ids = "152309"
-form.page = 1
 
-const fetchData = () => {
+// 初始化输入，防止卡顿，暂时存在
+useSelectedCardsStore().add(allCardDataMap.get(203213))
+
+const fetchData = async () => {
     let param = {
         ids: form.ids,
         page: form.page
     }
     param.ids = useSelectedCardsStore().selectedCard.map(card => card.id).join(",")
-    param.ids = "203222,203197,202824"
     param.page = 0
-    console.log("异步发送请求!列表数据请求中！当前page:" + form.page)
+    console.log("异步发送请求!列表数据请求中！")
     // 发送 axios 请求获取数据
     getDecksByIds(param).then((res: { data: string | any[]; }) => {
         const data = res.data
@@ -301,27 +293,6 @@ const SearchOnChange = () => {
     // page: form.page
     fetchData()
 }
-
-//下拉自动加载
-const loadMore = async () => {
-    // if (!scrollContainer.value || !loadingMore.value) {
-    //     return;
-    // }
-    // if (!isAllLoaded.value) {
-    //     return;
-    // }
-    // const containerRect = scrollContainer.value.getBoundingClientRect();
-    // const loadingRect = loadingMore.value.getBoundingClientRect();
-    // if (loadingRect.top - containerRect.bottom < 500) {
-    //     try {
-    //         form.page += 1
-    //         isAllLoaded.value = false;
-    //         fetchData()
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-};
 
 const selectCard = (card: Card) => {
     if (card.cardExtInfo.status == allCardEnumStore.BorderStyleEnum.Selected) {
