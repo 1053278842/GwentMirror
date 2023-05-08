@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, toRefs } from "vue";
+import { defineProps, onMounted, ref, toRefs } from "vue";
 import type { Deck } from "@/types/Deck";
 import type { Card } from "@/types/Card";
 import CardView from "./CardView.vue";
@@ -28,32 +28,80 @@ function formatDate(dateString: string): string {
   const day = date.getDate().toString();
   return `${year}/${month}/${day}`;
 }
+
+// 卡组预览头
+const moveContainer = ref<HTMLElement | null>(null);
+const operationsContainer = ref<HTMLElement | null>(null);
+// 卡组预览背景
+const bgOperation = ref<HTMLElement | null>(null);
+const bgListener = ref<HTMLElement | null>(null);
+
+onMounted(() => {
+  var startX = 0
+  var scaleX = .2;
+  var scaleLeftX = .1;
+  var scaleRightX = .2;
+  // fuck bug!
+  var fuckEClient = 0
+  let mouseoutTimer: number | undefined | NodeJS.Timeout;
+
+  moveContainer.value?.addEventListener('mouseover', (e) => {
+    clearTimeout(mouseoutTimer);
+    startX = fuckEClient == 0 ? e.clientX : fuckEClient;
+    operationsContainer.value?.classList.add('moving')
+  })
+
+  moveContainer.value?.addEventListener('mousemove', (e) => {
+    let offsetX = e.clientX - startX
+    offsetX *= offsetX > 0 ? scaleLeftX : scaleRightX
+    operationsContainer.value?.style.setProperty('--offset', `${offsetX}px`)
+  });
+
+  moveContainer.value?.addEventListener('mouseout', (e) => {
+    let offsetX = 0
+    offsetX *= scaleX
+    operationsContainer.value?.style.setProperty('--offset', `${offsetX}px`)
+    operationsContainer.value?.classList.remove('moving')
+
+    fuckEClient = startX
+    console.log("接触到img:" + startX + " ")
+    mouseoutTimer = setTimeout(() => {
+      // 检查鼠标是否还在父div内部
+      fuckEClient = 0
+    }, 200);
+  });
+
+  bgListener.value?.addEventListener("mouseover", () => {
+    bgOperation.value?.style.setProperty('transform', 'scale(1.02)');
+  })
+
+  bgListener.value?.addEventListener("mouseout", () => {
+    bgOperation.value?.style.setProperty('transform', 'scale(1)');
+  })
+
+  bgListener.value?.addEventListener("mousemove", (e) => {
+    bgOperation.value?.style.setProperty('transform-origin',
+      ((e.pageX - bgOperation.value?.offsetLeft) / bgOperation.value?.offsetWidth) * 100 + '% ' + ((e.pageY - bgOperation.value?.offsetTop) / bgOperation.value?.offsetHeight) * 100 + '%');
+  })
+
+})
+
+
 </script>
 
 <template>
   <a class="DeckRowTopLinkContainer">
     <!-- 种族分布bar -->
     <div height="80" class="DeckRowCompositionRatioBar">
-      <div
-        v-for="(value, key) in item.factionRatio"
-        class="DeckRowFactionBar"
-        :data-faction="value[0]"
-        :style="{ width: value[1] }"
-        :key="key"
-      ></div>
+      <div v-for="(value, key) in item.factionRatio" class="DeckRowFactionBar" :data-faction="value[0]"
+        :style="{ width: value[1] }" :key="key"></div>
     </div>
-    <div class="DeckRow_Top">
+    <div class="DeckRow_Top" ref="moveContainer">
       <div class="DeckRow_ArtContainer">
-        <div class="DeckRow_ArtContainerInner">
-          <div
-            class="DeckRow_ArtContainerList"
-            v-for="(card, key) in item.displayCards"
-            :key="key"
-          >
+        <div class="DeckRow_ArtContainerInner" ref="operationsContainer">
+          <div class="DeckRow_ArtContainerList" v-for="(card, key) in item.displayCards" :key="key">
             <div class="DeckRow_ArtImgContainer">
-              <img
-                :src="'/src/assets/card/art/preview/small/' + card.id + '.jpg'"
-              />
+              <img :src="'/src/assets/card/art/preview/small/' + card.id + '.jpg'" />
             </div>
           </div>
         </div>
@@ -62,13 +110,10 @@ function formatDate(dateString: string): string {
       <div class="DeckRow_ArtFade_left"></div>
       <div class="DeckRow_Left">
         <div class="DeckIcoContainer">
-          <img
-            :src="
-              '/src/assets/card/art/preview/factor/ico/' +
-              item.displayLeaderCid +
-              '.png'
-            "
-          />
+          <img :src="'/src/assets/card/art/preview/factor/ico/' +
+            item.displayLeaderCid +
+            '.png'
+            " />
         </div>
         <div class="DeckRowInfoContainer">
           <span>【{{ item.deckName }}】</span>
@@ -94,17 +139,13 @@ function formatDate(dateString: string): string {
       </div>
     </div>
   </a>
-  <div class="DeckBgContainer">
+  <div class="DeckBgContainer" ref="bgListener">
     <!-- <div class="DeckBgContainer"> -->
     <div class="DeckRowCardContainer">
       <div class="DeckRowCardContainerInner">
         <!-- 分类栏目 -->
-        <div
-          class="CardIconColumnContainer"
-          v-for="(map, type) in item.groupCardsByType"
-          :key="type"
-          v-show="map[1].totalCount > 0"
-        >
+        <div class="CardIconColumnContainer" v-for="(map, type) in item.groupCardsByType" :key="type"
+          v-show="map[1].totalCount > 0">
           <!-- 栏目标题 -->
           <div class="ColumnGroupTitle">
             <!-- 标题图标 -->
@@ -118,58 +159,30 @@ function formatDate(dateString: string): string {
             <span>{{ map[0] }} ({{ map[1].totalCount }})</span>
           </div>
           <!-- 卡牌图标列表 -->
-          <div
-            class="ColumnGroupCardIcons"
-            v-if="map[1].cards.length"
-            style="display: flex; justify-content: space-between"
-          >
-            <template
-              v-for="(card, cardIndex) in map[1].cards"
-              :key="cardIndex"
-            >
-              <template
-                v-if="
-                  cardIndex === 0 || card.id != map[1].cards[cardIndex - 1].id
-                "
-              >
+          <div class="ColumnGroupCardIcons" v-if="map[1].cards.length"
+            style="display: flex; justify-content: space-between">
+            <template v-for="(card, cardIndex) in map[1].cards" :key="cardIndex">
+              <template v-if="cardIndex === 0 || card.id != map[1].cards[cardIndex - 1].id
+                ">
                 <div style="flex: 1 1 auto">
-                  <div
-                    class="ColumnGroupCardIcon"
-                    :class="{
+                  <div class="ColumnGroupCardIcon" :class="{
                       RepeatCardColumn:
                         cardIndex < map[1].cards.length - 1
                           ? card.id == map[1].cards[cardIndex + 1].id
                           : true,
-                    }"
-                    :data-id="card.id"
-                    style="position: relative"
-                    @click="selectCard(card)"
-                  >
-                    <CardView
-                      :card="card"
-                      :data-status="card.cardExtInfo.status"
-                      class="CardView"
-                    />
-                    <CardView
-                      :card="card"
-                      class="CardView CardIconRepeat"
-                      v-if="
-                        cardIndex < map[1].cards.length - 1
-                          ? card.id == map[1].cards[cardIndex + 1].id
-                          : false
-                      "
-                    />
+                    }" :data-id="card.id" style="position: relative" @click="selectCard(card)">
+                    <CardView :card="card" :data-status="card.cardExtInfo.status" class="CardView" />
+                    <CardView :card="card" class="CardView CardIconRepeat" v-if="cardIndex < map[1].cards.length - 1
+                        ? card.id == map[1].cards[cardIndex + 1].id
+                        : false
+                      " />
                   </div>
                 </div>
               </template>
             </template>
 
             <!-- 空元素 -->
-            <div
-              v-for="i in map[1].cards.length"
-              style="flex: 1 1 auto"
-              :key="i"
-            >
+            <div v-for="i in map[1].cards.length" style="flex: 1 1 auto" :key="i">
               <div class="hh" style="width: 50.1px"></div>
             </div>
           </div>
@@ -192,32 +205,21 @@ function formatDate(dateString: string): string {
         </div>
         <!-- 卡牌图标列表 -->
         <div class="ColumnGroupCardIcons">
-          <div
-            class="ColumnGroupCardIcon"
-            v-for="(card, index) in item.allCard"
-            :key="index"
-            @click="selectCard(card)"
-          >
-            <CardView
-              :card="card"
-              class="CardView"
-              :data-status="card.cardExtInfo.status"
-            />
+          <div class="ColumnGroupCardIcon" v-for="(card, index) in item.allCard" :key="index" @click="selectCard(card)">
+            <CardView :card="card" class="CardView" :data-status="card.cardExtInfo.status" />
           </div>
         </div>
       </div>
       <!-- </div> -->
     </div>
     <!-- 背景图片 -->
-    <div
-      class="FactorCardBg"
-      :style="{
-        backgroundImage:
-          'url(/src/assets/card/art/preview/small/' +
-          item.displayLeaderCid +
-          '.jpg)',
-      }"
-    >
+    <div ref="bgListener" class="FactorCardBg">
+      <div ref="bgOperation" class="bgImg" :style="{
+          backgroundImage:
+            'url(/src/assets/card/art/preview/small/' +
+            item.displayLeaderCid +
+            '.jpg)',
+        }"></div>
       <div class="horizontalFade"></div>
       <div class="VerticalTopFade"></div>
       <div class="VerticalBottomFade"></div>
@@ -312,11 +314,59 @@ function formatDate(dateString: string): string {
 .DeckRow_Top {
   position: relative;
   overflow: hidden;
-  display: flex;
+  /* display: flex; */
   padding: 10px 20px;
   min-height: 100px;
   -webkit-box-pack: justify;
   justify-content: space-between;
+}
+
+.DeckRow_Top:hover ,#DeckListGridContainerInner:hover .DeckRow_Top{
+  padding: 7px 10px 7px 7px;
+}
+
+.DeckRow_Top:hover .DeckRow_ArtFade,
+.DeckRow_Top:hover .DeckRow_ArtFade_left,
+#DeckListGridContainerInner:hover .DeckRow_ArtFade,
+#DeckListGridContainerInner:hover .DeckRow_ArtFade_left {
+  opacity: .2;
+}
+
+.DeckRow_Top:hover .DeckRowStatusContainer,
+#DeckListGridContainerInner:hover .DeckRowStatusContainer {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.DeckRow_Top:hover .DeckRowInfoContainer,
+#DeckListGridContainerInner:hover .DeckRowInfoContainer {
+  margin-top: -40px;
+  margin-left: -10px;
+}
+
+#DeckListGridContainerInner:hover .horizontalFade {
+  opacity: .3;
+}
+
+.DeckRowStatusContainer,
+.DeckRow_Top,
+.DeckRowInfoContainer,
+.DeckRow_ArtFade,
+.DeckRow_ArtFade_left {
+  transition: 0.2s ease-in-out;
+}
+
+#DeckListGridContainerInner:hover .DeckRow_ArtImgContainer {
+  opacity: 0.6;
+  filter: blur(0px);
+}
+
+/* deck背景hover */
+.FactorCardBg {
+  transition: .2s all ease-in;
+}
+
+.DeckBgContainer:hover .FactorCardBg {
+  /* width: 65%; */
 }
 
 .DeckRow_Top .DeckRow_ArtContainer {
@@ -325,16 +375,26 @@ function formatDate(dateString: string): string {
   top: 0px;
   left: 0px;
   height: 100%;
+  z-index: -1;
+  transform: translateX(-70px);
 }
 
 .DeckRow_ArtContainerInner {
+  --offset: 0px;
   position: absolute;
   display: flex;
   top: 50%;
-  transform: translateY(-50%);
+  /* transform: translateY(-50%); */
   width: 100%;
   background: rgba(34, 34, 34, 0);
   margin-top: -1px;
+  transform: translate(calc(var(--offset)), -50%);
+  filter: blur(var(--blur));
+  transition: .4s all ease-in;
+}
+
+.DeckRow_ArtContainerInner.moving {
+  transition: none;
 }
 
 .DeckBgContainer {
@@ -367,18 +427,27 @@ function formatDate(dateString: string): string {
   right: 0;
   width: 60%;
   height: 100%;
+  -webkit-mask-image: -webkit-gradient(linear,
+      left top,
+      right top,
+      color-stop(0, transparent),
+      color-stop(5%, transparent),
+      color-stop(25%, #000),
+      color-stop(100%, #000));
+}
+
+.bgImg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 0 0px;
-  -webkit-mask-image: -webkit-gradient(
-    linear,
-    left top,
-    right top,
-    color-stop(0, transparent),
-    color-stop(5%, transparent),
-    color-stop(25%, #000),
-    color-stop(100%, #000)
-  );
+  --offset: 0px;
+  transform: translate(var(--offset), var(--offset));
+  transition: transform .5s ease-out;
 }
 
 .FactorCardBg .horizontalFade {
@@ -387,13 +456,13 @@ function formatDate(dateString: string): string {
   right: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    98deg,
-    rgb(38, 35, 33) 10%,
-    hsl(0deg 0% 100% / 0%) 50%,
-    rgb(38, 35, 33) 90%,
-    rgb(38, 35, 33) 100%
-  );
+  background: linear-gradient(98deg,
+      rgb(38, 35, 33) 10%,
+      hsl(0deg 0% 100% / 0%) 50%,
+      rgb(38, 35, 33) 90%,
+      rgb(38, 35, 33) 100%);
+  opacity: 1;
+  transition: 0.2s ease-in-out;
 }
 
 .FactorCardBg .VerticalTopFade {
@@ -402,13 +471,13 @@ function formatDate(dateString: string): string {
   right: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    180deg,
-    rgb(38, 35, 33) 10px,
-    hsl(0deg 0% 100% / 0%) 60px,
-    hsl(0deg 0% 100% / 0%) 80%,
-    rgb(38, 35, 33) 100%
-  );
+  background: linear-gradient(180deg,
+      rgb(38, 35, 33) 10px,
+      hsl(0deg 0% 100% / 0%) 60px,
+      hsl(0deg 0% 100% / 0%) 80%,
+      rgb(38, 35, 33) 100%);
+  opacity: 1;
+  transition: 0.2s ease-in-out;
 }
 
 .FactorCardBg .VerticalBottomFade {
@@ -417,40 +486,38 @@ function formatDate(dateString: string): string {
   right: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    hsl(0deg 0% 100% / 0%) 60px,
-    hsl(0deg 0% 100% / 0%) 80%,
-    rgb(38, 35, 33) 100%
-  );
+  background: linear-gradient(90deg,
+      hsl(0deg 0% 100% / 0%) 60px,
+      hsl(0deg 0% 100% / 0%) 80%,
+      rgb(38, 35, 33) 100%);
+  opacity: 1;
+  transition: 0.2s ease-in-out;
 }
 
 .DeckRow_Top .DeckRow_ArtFade {
   position: absolute;
-  z-index: -2;
+  opacity: 1;
+  z-index: -1;
   width: 10%;
   top: 0px;
   right: 0px;
   height: 100%;
-  background: linear-gradient(
-    to right,
-    transparent 0px,
-    rgba(16, 16, 16, 0.99) 80%
-  );
+  background: linear-gradient(to right,
+      transparent 0px,
+      rgba(16, 16, 16, 0.99) 80%);
 }
 
 .DeckRow_Top .DeckRow_ArtFade_left {
   position: absolute;
-  z-index: -2;
+  opacity: 1;
+  z-index: -1;
   width: 10%;
   top: 0px;
   left: 0px;
   height: 100%;
-  background: linear-gradient(
-    to left,
-    transparent 0px,
-    rgba(16, 16, 16, 0.99) 80%
-  );
+  background: linear-gradient(to left,
+      transparent 0px,
+      rgba(16, 16, 16, 0.99) 80%);
 }
 
 .DeckRow_Top .DeckRow_Left {
@@ -458,6 +525,7 @@ function formatDate(dateString: string): string {
   -webkit-box-align: center;
   align-items: center;
   z-index: 1;
+  cursor: default;
 }
 
 .DeckRowStatusContainer {
@@ -628,8 +696,7 @@ function formatDate(dateString: string): string {
   margin-bottom: 6px;
 }
 
-.CardIconRepeat img {
-}
+.CardIconRepeat img {}
 
 .RepeatCardColumn {
   margin-right: 8px;
@@ -676,17 +743,16 @@ function formatDate(dateString: string): string {
 .DeckRow_ArtImgContainer {
   flex: 0 0 auto;
   width: 358px;
-  transition: opacity 0.5s ease-in-out;
+  transition: 0.2s ease-in-out;
   height: 98px;
   margin-left: -21px;
   margin-right: 10px;
   clip-path: polygon(21px 0px, 358px 0px, 337px 98px, 0px 98px);
   opacity: 0.4;
+  filter: blur(.8px);
 }
 
-#DeckListGridContainerInner:hover .DeckRow_ArtImgContainer {
-  opacity: 0.6;
-}
+
 
 .DeckRow_ArtImgContainer img {
   object-fit: cover;

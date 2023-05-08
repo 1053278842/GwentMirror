@@ -1,27 +1,11 @@
 <template>
   <div id="body-bg" ref="deckListContainer">
-    <DynamicScroller
-      id="page"
-      :items="filteredItems"
-      :min-item-size="460"
-      :emit-update="false"
-      class="scroller DecksListRowContainer"
-      @resize="onResize"
-      @update="onUpdate"
-      :prerender="3"
-      style="min-height: 1000px; max-height: 1000px"
-      key-field="id1"
-    >
+    <DynamicScroller id="page" :items="filteredItems" :min-item-size="460" :emit-update="false"
+      class="scroller DecksListRowContainer" @resize="onResize" @update="onUpdate" :prerender="3"
+      style="min-height: 1000px; max-height: 1000px" key-field="id1">
       <template #default="{ item, index, active }">
-        <DynamicScrollerItem
-          :item="item"
-          :active="active"
-          :size-dependencies="[item.id1]"
-          :data-index="index"
-          :data-active="active"
-          :title="`当前Deck索引: ${index}`"
-          class="message"
-        >
+        <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.id1]" :data-index="index"
+          :data-active="active" :title="`当前Deck索引: ${index}`" class="message">
           <div id="PageContainer">
             <div id="PageContainerInner">
               <!-- 卡牌搜索框 -->
@@ -45,11 +29,8 @@
             </div>
           </div>
 
-          <div
-            v-if="index == decks.length - 1"
-            ref="loadingMore"
-            style="height: 250px; text-align: center; margin-top: 15px"
-          >
+          <div v-if="index == decks.length - 1" ref="loadingMore"
+            style="height: 250px; text-align: center; margin-top: 15px">
             <div style="font-size: 24px">
               <el-icon class="is-loading primary">
                 <ToiletPaper />
@@ -75,7 +56,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted, watchEffect } from "vue";
-import { getAllDeck, getDecksByIds } from "@/api/gwentmirror";
+import { getAllDeck, getDecksByIds, getRandomDeckLast } from "@/api/gwentmirror";
 import { useAllCardStore } from "@/stores/AllCards";
 import { useDefaultDecksStore } from "@/stores/DefaultDecks";
 import { useCardEnumStore } from "@/stores/CardEnum";
@@ -115,6 +96,7 @@ const loadingMore = ref<HTMLElement | null>(null);
 const cardInfoContainer = ref<HTMLElement | null>(null);
 const isClickBody = ref(false);
 
+// 悬停卡牌
 const activeCard = reactive({
   cardInfo: {} as Card,
 });
@@ -122,58 +104,58 @@ const activeCard = reactive({
 
 const decks = reactive([] as Deck[]);
 
-const fetchData = () => {
-  let param = {
-    ids: selectedCardStore.getIds(),
-    page: 0,
-  };
-  if (param.ids.length == 0) {
-    param.page = 20;
+const fetchData = async () => {
+  if (selectedCardStore.getIds.length != 0) {
+    let param = {
+      ids: selectedCardStore.getIds(),
+      page: 0,
+    };
+    console.log("获取全部相关卡组");
+    getDecksByIds(param).then(deckJsonToViewData);
+  } else {
+    console.log("随机获取n个本版本卡组");
+    let MAX_RANDOM_NUM = 50
+    getRandomDeckLast(MAX_RANDOM_NUM).then(deckJsonToViewData);
   }
-  console.log(
-    "异步发送请求!列表数据请求中！当前params.ids:" +
-      param.ids +
-      " param.page: " +
-      param.page
-  );
-  // 发送 axios 请求获取数据
-  getDecksByIds(param).then((res: { data: string | any[] }) => {
-    const data = res.data;
-    for (let index = 0; index < data.length; index++) {
-      const deckJson = data[index];
-      const deck: Deck = {
-        deckAuthor: deckJson.deckAuthor,
-        deckName: deckJson.deckName,
-        sortCtIds: deckJson.sortedCtIds,
-        time: deckJson.time,
-        allCard: [],
-        groupCardsByType: new Map(),
-        factionRatio: new Map(),
-        displayCards: [],
-        displayLeaderCid: deckJson.leaderCtId,
-        displayStratagemCid: deckJson.stratagemCtId,
-        deckWebId: deckJson.webDeckId,
-        fromPlayerId: deckJson.fromPlayerId,
-        factionId: deckJson.factionId,
-        id1: deckJson.time,
-      };
-      deck.allCard = computedAllCard(deck);
-      deck.groupCardsByType = computedGroupCardsByType(deck);
-      deck.factionRatio = computedFactionRatio(deck);
-      // 应该由后台传来，现在的规则是：p值最高的3~4个
-      deck.displayCards = [
-        deck.allCard[1],
-        deck.allCard[2],
-        deck.allCard[3],
-        deck.allCard[4],
-      ];
-
-      decks.push(deck);
-    }
-
-    isAllLoaded.value = true;
-  });
 };
+
+const deckJsonToViewData = (res: { data: string | any[] }) => {
+  const data = res.data;
+  for (let index = 0; index < data.length; index++) {
+    const deckJson = data[index];
+    const deck: Deck = {
+      deckAuthor: deckJson.deckAuthor,
+      deckName: deckJson.deckName,
+      sortCtIds: deckJson.sortedCtIds,
+      time: deckJson.time,
+      allCard: [],
+      groupCardsByType: new Map(),
+      factionRatio: new Map(),
+      displayCards: [],
+      displayLeaderCid: deckJson.leaderCtId,
+      displayStratagemCid: deckJson.stratagemCtId,
+      deckWebId: deckJson.webDeckId,
+      fromPlayerId: deckJson.fromPlayerId,
+      factionId: deckJson.factionId,
+      id1: deckJson.time,
+    };
+    deck.allCard = computedAllCard(deck);
+    deck.groupCardsByType = computedGroupCardsByType(deck);
+    deck.factionRatio = computedFactionRatio(deck);
+    // 应该由后台传来，现在的规则是：p值最高的3~4个
+    deck.displayCards = [
+      deck.allCard[1],
+      deck.allCard[2],
+      deck.allCard[3],
+      deck.allCard[4],
+      deck.allCard[5],
+    ];
+
+    decks.push(deck);
+  }
+
+  isAllLoaded.value = true;
+}
 
 const computedAllCard = (deck: Deck) => {
   let cards: Card[] = [];
@@ -323,27 +305,6 @@ function onUpdate(
   data.value.updateParts.visibleEndIdx = visibleEndIndex;
 }
 
-//下拉自动加载
-const loadMore = async () => {
-  // if (!scrollContainer.value || !loadingMore.value) {
-  //     return;
-  // }
-  // if (!isAllLoaded.value) {
-  //     return;
-  // }
-  // const containerRect = scrollContainer.value.getBoundingClientRect();
-  // const loadingRect = loadingMore.value.getBoundingClientRect();
-  // if (loadingRect.top - containerRect.bottom < 500) {
-  //     try {
-  //         form.page += 1
-  //         isAllLoaded.value = false;
-  //         fetchData()
-  //     } catch (error) {
-  //         console.error(error);
-  //     }
-  // }
-};
-
 const selectCard = (card: Card) => {
   if (card.cardExtInfo.status == allCardEnumStore.BorderStyleEnum.Selected) {
     card.cardExtInfo.status = allCardEnumStore.BorderStyleEnum.Normal;
@@ -461,6 +422,7 @@ const getCardIdByXY = (x: number, y: number) => {
     return -1;
   }
 };
+
 </script>
 <style>
 * {
