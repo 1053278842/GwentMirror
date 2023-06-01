@@ -1,11 +1,27 @@
 <template>
   <div id="body-bg" ref="deckListContainer">
-    <DynamicScroller id="page" :items="filteredItems" :min-item-size="460" :emit-update="false"
-      class="scroller DecksListRowContainer" @resize="onResize" @update="onUpdate" :prerender="3"
-      style="min-height: 1000px; max-height: 1000px" key-field="id1">
+    <DynamicScroller
+      id="page"
+      :items="filteredItems"
+      :min-item-size="460"
+      :emit-update="false"
+      class="scroller DecksListRowContainer"
+      @resize="onResize"
+      @update="onUpdate"
+      :prerender="3"
+      style="min-height: 1000px; max-height: 1000px"
+      key-field="id1"
+    >
       <template #default="{ item, index, active }">
-        <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.id1]" :data-index="index"
-          :data-active="active" :title="`当前Deck索引: ${index}`" class="message">
+        <DynamicScrollerItem
+          :item="item"
+          :active="active"
+          :size-dependencies="[item.id1]"
+          :data-index="index"
+          :data-active="active"
+          :title="`当前Deck索引: ${index}`"
+          class="message"
+        >
           <div id="PageContainer">
             <div id="PageContainerInner">
               <!-- 卡牌搜索框 -->
@@ -29,8 +45,11 @@
             </div>
           </div>
 
-          <div v-if="index == decks.length - 1" ref="loadingMore"
-            style="height: 250px; text-align: center; margin-top: 15px">
+          <div
+            v-if="index == decks.length - 1"
+            ref="loadingMore"
+            style="height: 250px; text-align: center; margin-top: 15px"
+          >
             <div style="font-size: 24px">
               <el-icon class="is-loading primary">
                 <ToiletPaper />
@@ -56,7 +75,11 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted, watchEffect } from "vue";
-import { getAllDeck, getDecksByIds, getRandomDeckLast } from "@/api/gwentmirror";
+import {
+  getAllDeck,
+  getDecksByIds,
+  getRandomDeckLast,
+} from "@/api/gwentmirror";
 import { useAllCardStore } from "@/stores/AllCards";
 import { useDefaultDecksStore } from "@/stores/DefaultDecks";
 import { useCardEnumStore } from "@/stores/CardEnum";
@@ -114,7 +137,7 @@ const fetchData = async () => {
     getDecksByIds(param).then(deckJsonToViewData);
   } else {
     console.log("随机获取n个本版本卡组");
-    let MAX_RANDOM_NUM = 50
+    let MAX_RANDOM_NUM = 50;
     getRandomDeckLast(MAX_RANDOM_NUM).then(deckJsonToViewData);
   }
 };
@@ -155,7 +178,7 @@ const deckJsonToViewData = (res: { data: string | any[] }) => {
   }
 
   isAllLoaded.value = true;
-}
+};
 
 const computedAllCard = (deck: Deck) => {
   let cards: Card[] = [];
@@ -422,7 +445,6 @@ const getCardIdByXY = (x: number, y: number) => {
     return -1;
   }
 };
-
 </script>
 <style>
 * {
