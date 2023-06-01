@@ -7,7 +7,7 @@
             <div v-for="(card,index) in selectedCard" :key="index">
                 <div class="CardToken card-data" :data-id="card.id">
                     <CardView :card="card" :size="'small'"></CardView>
-                    <div class="deleteToken" @click="remove(card as Card)">
+                    <div class="deleteToken" @click="selectCard(card as Card)">
                         <div class="deleteIco">
                             <el-icon size="14" color="#fff"> 
                                 <Delete />
@@ -30,7 +30,7 @@
             <DynamicScroller :items="filteredItems" :min-item-size="54" :emit-update="true" class="scroller ShowList"
                 @update="onUpdate">
                 <template #default="{ item, index, active }">
-                    <ul @click="add(item)">
+                    <ul @click="selectCard(item)">
                         <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[
                             item.name,
                         ]" :data-index="index" :data-active="active" :title="`当前Card索引: ${index}`" class="message">
@@ -50,12 +50,21 @@ import { usrSearchCardBarStatusStore } from '@/stores/status';
 import CardView from './CardView.vue';
 import { useAllCardStore } from '@/stores/AllCards';
 import { useSelectedCardsStore } from '@/stores/UserOperationStore';
-import { Card } from '@/types/Card';
+import type { Card } from '@/types/Card';
+
+const props = defineProps({
+  selectCard: {
+    type: Function,
+    required: true,
+  },
+});
+
 useAllCardStore().initCardData()
 const allCardStore = useAllCardStore();
 
 const { selectedCard, remove, add } = useSelectedCardsStore();
 const allCard = useAllCardStore().cardData;
+
 
 const data = ref({
     allCard,

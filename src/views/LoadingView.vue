@@ -12,12 +12,16 @@
 }
 
 #app {
-  background: radial-gradient(#222922, #000500);
-  font-family: 'Source Code Pro', monospace;
-  font-weight: 400;
-  overflow: hidden;
-  padding: 30px 0 0 30px;
-  text-align: center;
+  background: radial-gradient(#2229227d, #000500b0);
+    font-family: 'Source Code Pro', monospace;
+    font-weight: 400;
+    overflow: hidden;
+    padding: 30px 0 0 30px;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
 .word {
