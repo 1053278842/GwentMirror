@@ -24,20 +24,8 @@ export default defineConfig({
   },
 
 
-  build: {
-     chunkSizeWarningLimit: 1000,
-     outDir: "dist",
-     assetsDir: "src/assets", //指定静态资源存放路径
-     // assetsPublicPath:'',
-     sourcemap: true, //是否构建source map 文件
-     terserOptions: {
-       // 生产环境移除console
-       compress: {
-         drop_console: true,
-         drop_debugger: true,
-       },
-     },
-  },
+
+
 
   server: {
   proxy: {
