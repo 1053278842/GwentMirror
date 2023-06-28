@@ -16,15 +16,15 @@
           <div id="PageContainer">
             <div id="PageContainerInner">
               <!-- 卡牌搜索框 -->
-              <form id="SearchFormContainer" @submit.prevent v-if="index == 0">
-                <CardSearchView></CardSearchView>
+              <form id="SearchFormContainer" @submit.prevent v-if="index == 0 ">
+                <CardSearchView :select-card="selectCard"></CardSearchView>
               </form>
               <hr v-if="index == 0" />
               <!-- 搜索结果 -->
               <div id="DecksListResult" v-if="index == 0">
                 <span>
                   <b>-> {{ decks.length }} </b>
-                  ……风暴正在登录.
+                  ……{{ tips }}
                 </span>
               </div>
               <!-- 预览列表 -->
@@ -59,8 +59,12 @@
         </DynamicScrollerItem>
       </template>
     </DynamicScroller>
+    </template>
+
     <!-- 卡牌详细信息1 -->
     <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo" />
+    <!-- Loading -->
+    <LoadingView v-show="loading"></LoadingView>
   </div>
 </template>
 
@@ -72,7 +76,6 @@ import {
   getRandomDeckLast,
 } from "@/api/gwentmirror";
 import { useAllCardStore } from "@/stores/AllCards";
-import { useDefaultDecksStore } from "@/stores/DefaultDecks";
 import { useCardEnumStore } from "@/stores/CardEnum";
 import type { Card } from "@/types/Card";
 import type { Deck } from "@/types/Deck";
@@ -82,6 +85,7 @@ import {
 } from "@/stores/status";
 import CardView from "./CardView.vue";
 import CardSearchView from "./CardSearchView.vue";
+import LoadingView from "./LoadingView.vue";
 import CardInfo from "./CardInfo.vue";
 import DeckView from "./DeckView.vue";
 import { useSelectedCardsStore } from "@/stores/UserOperationStore";
@@ -94,8 +98,6 @@ const allCardStore = useAllCardStore();
 const allCardDataMap = allCardStore.cardDataMap;
 allCardStore.initCardData();
 
-useDefaultDecksStore().initCardData();
-const DefaultDecks: Deck[] = useDefaultDecksStore().deckData;
 
 // sortIds第一张永远是技能卡
 type SearchParam = {
@@ -103,13 +105,15 @@ type SearchParam = {
   page: number;
 };
 
-const isAllLoaded = ref(true);
+const tips = ref("");
+
+
 const scrollContainer = ref<HTMLElement | null>(null);
 const deckListContainer = ref<HTMLElement | null>(null);
 const loadingMore = ref<HTMLElement | null>(null);
 const cardInfoContainer = ref<HTMLElement | null>(null);
 const isClickBody = ref(false);
-
+const loading = ref(false);
 // 悬停卡牌
 const activeCard = reactive({
   cardInfo: {} as Card,
@@ -119,22 +123,25 @@ const activeCard = reactive({
 const decks = reactive([] as Deck[]);
 
 const fetchData = async () => {
-  if (selectedCardStore.getIds.length != 0) {
+  loading.value = true;
+  if (selectedCardStore.getIds().length != 0) {
     let param = {
       ids: selectedCardStore.getIds(),
       page: 0,
     };
-    console.log("获取全部相关卡组");
+    tips.value = "风暴正在登陆";
     getDecksByIds(param).then(deckJsonToViewData);
   } else {
     console.log("随机获取n个本版本卡组");
     let MAX_RANDOM_NUM = 50
     getRandomDeckLast(MAX_RANDOM_NUM).then(deckJsonToViewData);
   }
+
 };
 
 const deckJsonToViewData = (res: { data: string | any[] }) => {
   const data = res.data;
+  let decksTemp = [] as Deck[]
   for (let index = 0; index < data.length; index++) {
     const deckJson = data[index];
     const deck: Deck = {
@@ -347,7 +354,6 @@ const selectCard = (card: Card) => {
       i++;
     }
   }
-  decks.length = 0;
   fetchData();
 };
 
@@ -453,6 +459,7 @@ const getCardIdByXY = (x: number, y: number) => {
   background-color: rgb(38, 35, 33);
   font-family: "Open Sans", sans-serif;
   color: white;
+  /* background-image: url("/src/assets/xili.png"); */
 }
 
 #page {
