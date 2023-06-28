@@ -1,18 +1,12 @@
 <template>
   <div id="body-bg" ref="deckListContainer">
+    <template v-if="filteredItems.length>0">
     <DynamicScroller id="page" :items="filteredItems" :min-item-size="460" :emit-update="false"
       class="scroller DecksListRowContainer" @resize="onResize" @update="onUpdate" :prerender="3"
       style="min-height: 1000px; max-height: 1000px" key-field="id1">
       <template #default="{ item, index, active }">
-        <DynamicScrollerItem
-          :item="item"
-          :active="active"
-          :size-dependencies="[item.id1]"
-          :data-index="index"
-          :data-active="active"
-          :title="`当前Deck索引: ${index}`"
-          class="message"
-        >
+        <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.id1]" :data-index="index"
+          :data-active="active" :title="`当前Deck索引: ${index}`" class="message">
           <div id="PageContainer">
             <div id="PageContainerInner">
               <!-- 卡牌搜索框 -->
@@ -36,11 +30,8 @@
             </div>
           </div>
 
-          <div
-            v-if="index == decks.length - 1"
-            ref="loadingMore"
-            style="height: 250px; text-align: center; margin-top: 15px"
-          >
+          <div v-if="index == decks.length - 1" ref="loadingMore"
+            style="height: 250px; text-align: center; margin-top: 15px">
             <div style="font-size: 24px">
               <el-icon class="is-loading primary">
                 <ToiletPaper />
@@ -70,11 +61,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, computed, onMounted, watchEffect } from "vue";
-import {
-  getAllDeck,
-  getDecksByIds,
-  getRandomDeckLast,
-} from "@/api/gwentmirror";
+import { getAllDeck, getDecksByIds, getRandomDeckLast } from "@/api/gwentmirror";
 import { useAllCardStore } from "@/stores/AllCards";
 import { useCardEnumStore } from "@/stores/CardEnum";
 import type { Card } from "@/types/Card";
@@ -132,7 +119,7 @@ const fetchData = async () => {
     tips.value = "风暴正在登陆";
     getDecksByIds(param).then(deckJsonToViewData);
   } else {
-    console.log("随机获取n个本版本卡组");
+    tips.value = "随机的总是好的.";
     let MAX_RANDOM_NUM = 50
     getRandomDeckLast(MAX_RANDOM_NUM).then(deckJsonToViewData);
   }
@@ -172,10 +159,13 @@ const deckJsonToViewData = (res: { data: string | any[] }) => {
       deck.allCard[5],
     ];
 
-    decks.push(deck);
+    decksTemp.push(deck);
   }
-
-  isAllLoaded.value = true;
+  loading.value = false;
+  decks.length = 0;
+  decksTemp.forEach( deck =>{
+    decks.push(deck);
+  })
 }
 
 const computedAllCard = (deck: Deck) => {
@@ -442,6 +432,7 @@ const getCardIdByXY = (x: number, y: number) => {
     return -1;
   }
 };
+
 </script>
 <style>
 * {
