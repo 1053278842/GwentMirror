@@ -1,57 +1,61 @@
 <template>
   <div id="body-bg" ref="deckListContainer">
-    <template v-if="filteredItems.length>0">
-    <DynamicScroller id="page" :items="filteredItems" :min-item-size="460" :emit-update="false"
-      class="scroller DecksListRowContainer" @resize="onResize" @update="onUpdate" :prerender="3"
-      style="min-height: 1000px; max-height: 1000px" key-field="id1">
-      <template #default="{ item, index, active }">
-        <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.id1]" :data-index="index"
-          :data-active="active" :title="`当前Deck索引: ${index}`" class="message">
-          <div id="PageContainer">
-            <div id="PageContainerInner">
-              <!-- 卡牌搜索框 -->
-              <form id="SearchFormContainer" @submit.prevent v-if="index == 0 ">
-                <CardSearchView :select-card="selectCard"></CardSearchView>
-              </form>
-              <hr v-if="index == 0" />
-              <!-- 搜索结果 -->
-              <div id="DecksListResult" v-if="index == 0">
-                <span>
-                  <b>-> {{ decks.length }} </b>
-                  ……{{ tips }}
-                </span>
-              </div>
-              <!-- 预览列表 -->
-              <div id="DeckListGridContainer">
-                <div id="DeckListGridContainerInner">
-                  <DeckView :item="item" :select-card="selectCard"></DeckView>
+    <template v-if="filteredItems.length > 0">
+      <div id="PageContainer">
+        <div id="PageContainerInner">
+          <!-- 卡牌搜索框 -->
+          <form id="SearchFormContainer" @submit.prevent>
+            <CardSearchView :select-card="selectCard"></CardSearchView>
+          </form>
+          <hr />
+          <!-- 搜索结果 -->
+          <div id="DecksListResult">
+            <span>
+              <b>-> {{ decks.length }} </b>
+              ……{{ tips }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <DynamicScroller id="page" :items="filteredItems" :min-item-size="460" :emit-update="false"
+        class="scroller DecksListRowContainer" @resize="onResize" @update="onUpdate" :prerender="3"
+        style="min-height: 1000px; max-height: 1000px" key-field="id1">
+        <template #default="{ item, index, active }">
+          <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.id1]" :data-index="index"
+            :data-active="active" :title="`当前Deck索引: ${index}`" class="message">
+            <div id="PageContainer">
+              <div id="PageContainerInner">
+              
+                <!-- 预览列表 -->
+                <div id="DeckListGridContainer">
+                  <div id="DeckListGridContainerInner">
+                    <DeckView :item="item" :select-card="selectCard"></DeckView>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div v-if="index == decks.length - 1" ref="loadingMore"
-            style="height: 250px; text-align: center; margin-top: 15px">
-            <div style="font-size: 24px">
-              <el-icon class="is-loading primary">
-                <ToiletPaper />
-              </el-icon>
-              <div style="margin-top: 10px" v-if="decks.length % 10 >= 7">
-                好像...到底了....
-              </div>
-              <div style="margin-top: 10px" v-else="decks.length % 10 >= 4">
-                这里...好深啊.......好深....
-              </div>
-              <div style="margin-top: 10px" v-else>
-                已经...不用再滚动.......了....
+            <div v-if="index == decks.length - 1" ref="loadingMore"
+              style="height: 250px; text-align: center; margin-top: 15px">
+              <div style="font-size: 24px">
+                <el-icon class="is-loading primary">
+                  <ToiletPaper />
+                </el-icon>
+                <div style="margin-top: 10px" v-if="decks.length % 10 >= 7">
+                  好像...到底了....
+                </div>
+                <div style="margin-top: 10px" v-else="decks.length % 10 >= 4">
+                  这里...好深啊.......好深....
+                </div>
+                <div style="margin-top: 10px" v-else>
+                  已经...不用再滚动.......了....
+                </div>
               </div>
             </div>
-          </div>
-        </DynamicScrollerItem>
-      </template>
-    </DynamicScroller>
+          </DynamicScrollerItem>
+        </template>
+      </DynamicScroller>
     </template>
-
     <!-- 卡牌详细信息1 -->
     <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo" />
     <!-- Loading -->
@@ -163,7 +167,7 @@ const deckJsonToViewData = (res: { data: string | any[] }) => {
   }
   loading.value = false;
   decks.length = 0;
-  decksTemp.forEach( deck =>{
+  decksTemp.forEach(deck => {
     decks.push(deck);
   })
 }
@@ -171,15 +175,18 @@ const deckJsonToViewData = (res: { data: string | any[] }) => {
 const computedAllCard = (deck: Deck) => {
   let cards: Card[] = [];
   deck.sortCtIds.forEach((ids) => {
-    const card: Card = getCardById(ids) as Card;
-    if (card !== undefined) {
-      // 计算选择的样式效果
-      let ids = selectedCardStore.getIds();
-      if (card.id == parseInt(ids)) {
-        card.cardExtInfo.status = allCardEnumStore.BorderStyleEnum.Selected;
+    if (deck.displayLeaderCid != ids) {
+      const card: Card = getCardById(ids) as Card;
+      if (card !== undefined) {
+        // 计算选择的样式效果
+        let ids = selectedCardStore.getIds();
+        if (card.id == parseInt(ids)) {
+          card.cardExtInfo.status = allCardEnumStore.BorderStyleEnum.Selected;
+        }
+        cards.push(card);
       }
-      cards.push(card);
     }
+
   });
   cards.sort(
     (a, b) =>
@@ -187,7 +194,7 @@ const computedAllCard = (deck: Deck) => {
       b.id -
       ((a.provision > 0 ? a.provision : 20) * 1000000 - a.id)
   );
-  return cards;
+  return cards.slice(1);
 };
 
 const computedFactionRatio = (deck: Deck) => {
@@ -368,7 +375,7 @@ const handleCardMouseOver = (event: MouseEvent) => {
     //弹出信息框
     //填充信息框信息
     var card: Card = getCardById(cid) as Card;
-    card = { ...card };
+    card = JSON.parse(JSON.stringify(card));
     card.res = "larger";
     activeCard.cardInfo = card;
 

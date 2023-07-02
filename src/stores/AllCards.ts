@@ -4,6 +4,7 @@ import { getAllData } from "@/api/carddata";
 import { useCardEnumStore } from "@/stores/CardEnum";
 import type { Card } from "@/types/Card";
 import allCardData from "@/assets/allCard.json";
+import allCardInfo from "@/assets/card_json.json";
 
 export const useAllCardStore = defineStore("AllCards", () => {
   // 常量
@@ -29,8 +30,87 @@ export const useAllCardStore = defineStore("AllCards", () => {
     //     jsonDataToCards(res.data)
     //     console.log("初始化card-all完成!")
     // });
-    const data = allCardData;
-    jsonDataToCards(data);
+    const data = allCardInfo;
+    Object.entries(data).forEach(([key, value_card]) => {
+
+      var rarity_web = value_card.rarity;
+      var rarity = Rarity.Common;
+      var border_color = BorderColor.Bronze;
+      if (rarity_web == "25") {
+        rarity = Rarity.Legendary;
+        border_color = BorderColor.Gold;
+      } else if (rarity_web == "20") {
+        rarity = Rarity.Epic;
+        border_color = BorderColor.Gold;
+      } else if (rarity_web == "15") rarity = Rarity.Rare;
+
+      var type_web = value_card.type;
+      var cardType = CardType.Unit;
+      if (type_web == "16") cardType = CardType.Stratagem;
+      else if (type_web == "8") cardType = CardType.Artifact;
+      else if (type_web == "4") cardType = CardType.Unit;
+      else if (type_web == "2") cardType = CardType.Special;
+      var faction = Faction.Monster;
+      switch (value_card.factionId) {
+        case "0":
+          faction = Faction.Neutral;
+          break;
+        case "1":
+          faction = Faction.Monster;
+          break;
+        case "2":
+          faction = Faction.Nilfgaard;
+          break;
+        case "3":
+          faction = Faction.Northern_Realms;
+          break;
+        case "4":
+          faction = Faction.Scoiatael;
+          break;
+        case "5":
+          faction = Faction.Skellige;
+          break;
+        case "6":
+          faction = Faction.Syndicate;
+          break;
+      }
+      // var categories: Array<String>[] = card.translations.en.categories;
+      // var category: string = "";
+      // if (categories) {
+      //   // 检查 categories 是否存在
+      //   category = categories.flat().join(",");
+      // }
+      var card: Card = {
+        res: "medium",
+
+        id: Number(key),
+        power: Number(value_card.power),
+        armor: value_card.armor,
+        provision: Number(value_card.provision),
+        faction: faction,
+        color: border_color,
+        type: cardType,
+        rarity: rarity,
+        imgUrl: new URL(
+          imgUrl.value + key + imgSuffix.value,
+          import.meta.url
+        ).href,
+        name: value_card.name,
+        tooltip:value_card.tip,
+        categories: '未知',
+        fluff: value_card.description,
+        cardExtInfo: {
+          repeat: false,
+          order: 0,
+          status: "",
+        },
+        verticalDir: "under",
+        horizontalDir: "right",
+      };
+      cardDataMap.set(Number(key), card);
+      cardData.push(card);
+    });
+    // jsonDataToCards(data);
   }
 
   function jsonDataToCards(data: any) {

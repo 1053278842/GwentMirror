@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { defineProps, toRefs } from "vue";
+import { ref,defineProps, toRefs, onMounted, computed, watch } from "vue";
 import type { Card } from "@/types/Card";
 import { useCardEnumStore } from "@/stores/CardEnum";
-
 const CardEnumStore = useCardEnumStore();
 const BorderColor = CardEnumStore.BorderColorEnum;
 const Rarity = CardEnumStore.RarityEnum;
@@ -24,6 +23,13 @@ if (props.size) {
 }
 // const {card} = toRefs(props);
 //悬停展示信息
+
+
+const formattedTooltip = computed(() => {
+  const text = props.card.tooltip;
+  return text.replace(/\\n/g, "<br/>").replace(/<keyword=([a-zA-Z]+)>/g, "<span class='keyword'>").replace(/<\/keyword>/g, "</span>");
+});
+
 </script>
 
 <template>
@@ -54,9 +60,8 @@ if (props.size) {
           <div class="card-category">{{ card.categories }}</div>
         </div>
         <div class="card-body">
-          <div class="card-body-ability"><span class="keyword doomed">佚亡</span><br>
-            <span class="keyword deploy">部署：</span>若己方起始牌组有至少 25 个单位，则<span class="keyword create">创造</span> 1
-            个诅咒来代替己方领袖能力，随后<span class="keyword create">创造</span> 1 个祝福<span class="keyword infused">灌注</span>己方领袖能力。
+          <div class="card-body-ability"><span class="keyword doomed">未知</span><br>
+            <div v-html="formattedTooltip"></div>
             <br>
           </div>
           <p class="card-body-ext">{{card.fluff}}
@@ -70,11 +75,7 @@ if (props.size) {
           <div class="card-image-wrap">
             <!-- "'@\assets\card\art\preview\big\'+card.id+'.jpg'" -->
             <div class="card_asset-img">
-              <img
-                loading="lazy"
-                :src="card.imgUrl"
-              >
-
+              <img loading="lazy" :src="card.imgUrl" />
             </div>
             <div class="card_asset-border"></div>
 
@@ -108,6 +109,10 @@ if (props.size) {
 </template>
 
 <style>
+
+.keyword{
+  font-weight: bolder;
+}
 .card-wrap {
   /* display: flex; */
   flex-direction: row-reverse;
