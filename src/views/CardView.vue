@@ -13,7 +13,7 @@ const props = defineProps({
     required: true,
   },
   size: {
-    type: Object as () => string,
+    type: String as () => string,
     required: false,
   },
 });

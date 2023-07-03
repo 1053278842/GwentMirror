@@ -70,7 +70,7 @@ class Ticker {
   private letterCurrent: number = 0;
   private cycleCount: number = 5;
   private cycleCurrent: number = 0;
-  private chars: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-_=+{}|[]\\;\':"<>?,./`~'.split('');
+  private chars: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ,._'.split('');
   private charsCount: number = this.chars.length;
   private done: boolean = false;
 
@@ -86,7 +86,6 @@ class Ticker {
 
   private lettering(elem: HTMLElement): void {
     elem.innerHTML = elem.textContent!.replace(/\S/g, "<span>$&</span>");
-    console.log(elem )
   }
 
   private getChar(): string {

@@ -64,7 +64,6 @@ onMounted(() => {
     operationsContainer.value?.classList.remove('moving')
 
     fuckEClient = startX
-    console.log("接触到img:" + startX + " ")
     mouseoutTimer = setTimeout(() => {
       // 检查鼠标是否还在父div内部
       fuckEClient = 0

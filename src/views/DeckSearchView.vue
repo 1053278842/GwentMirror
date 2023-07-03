@@ -133,7 +133,7 @@ const fetchData = async () => {
 };
 
 const deckJsonToViewData = (res: { data: string | any[] }) => {
-  const data = res.data;
+  const data : any  = res;
   let decksTemp = [] as Deck[]
   for (let index = 0; index < data.length; index++) {
     const deckJson = data[index];
