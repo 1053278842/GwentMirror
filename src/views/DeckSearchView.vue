@@ -1,6 +1,6 @@
 <template>
   <div id="body-bg" ref="deckListContainer">
-    <template v-if="filteredItems.length > 0">
+    <template v-if="!loading||filteredItems.length > 0">
       <div id="PageContainer">
         <div id="PageContainerInner">
           <!-- 卡牌搜索框 -->
@@ -55,9 +55,24 @@
         </template>
       </DynamicScroller>
     </template>
-    <template v-else>
+    <!-- <template v-else>
+      <div v-if="!loading" id="PageContainer">
+        <div id="PageContainerInner">
 
-    </template>
+          <form id="SearchFormContainer" @submit.prevent>
+            <CardSearchView :select-card="selectCard"></CardSearchView>
+          </form>
+          <hr />
+
+          <div id="DecksListResult">
+            <span>
+              <b>-> {{ decks.length }} </b>
+              ……{{ tips }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </template> -->
     <!-- 卡牌详细信息1 -->
     <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo" />
     <!-- Loading -->
