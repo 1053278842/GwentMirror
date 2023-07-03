@@ -36,13 +36,13 @@ export const useAllCardStore = defineStore("AllCards", () => {
       var rarity_web = value_card.rarity;
       var rarity = Rarity.Common;
       var border_color = BorderColor.Bronze;
-      if (rarity_web == "25") {
+      if (rarity_web == "8") {
         rarity = Rarity.Legendary;
         border_color = BorderColor.Gold;
-      } else if (rarity_web == "20") {
+      } else if (rarity_web == "4") {
         rarity = Rarity.Epic;
         border_color = BorderColor.Gold;
-      } else if (rarity_web == "15") rarity = Rarity.Rare;
+      } else if (rarity_web == "2") rarity = Rarity.Rare;
 
       var type_web = value_card.type;
       var cardType = CardType.Unit;

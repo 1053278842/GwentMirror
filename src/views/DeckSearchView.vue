@@ -22,7 +22,7 @@
         style="min-height: 1000px; max-height: 1000px" key-field="id1">
         <template #default="{ item, index, active }">
           <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[item.id1]" :data-index="index"
-            :data-active="active" :title="`当前Deck索引: ${index}`" class="message">
+            :data-active="active"  class="message">
             <div id="PageContainer">
               <div id="PageContainerInner">
               
@@ -34,9 +34,8 @@
                 </div>
               </div>
             </div>
-
             <div v-if="index == decks.length - 1" ref="loadingMore"
-              style="height: 250px; text-align: center; margin-top: 15px">
+              style="height: 500px; text-align: center; margin-top: 15px">
               <div style="font-size: 24px">
                 <el-icon class="is-loading primary">
                   <ToiletPaper />
@@ -55,6 +54,9 @@
           </DynamicScrollerItem>
         </template>
       </DynamicScroller>
+    </template>
+    <template v-else>
+
     </template>
     <!-- 卡牌详细信息1 -->
     <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo" />
@@ -445,7 +447,19 @@ const getCardIdByXY = (x: number, y: number) => {
 * {
   box-sizing: inherit;
 }
+.vue-recycle-scroller.direction-vertical:not(.page-mode) {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
 
+.vue-recycle-scroller.direction-vertical:not(.page-mode)::-webkit-scrollbar {
+  width: 6px;
+}
+
+.vue-recycle-scroller.direction-vertical:not(.page-mode)::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
 #body-bg {
   position: absolute;
   width: 100%;

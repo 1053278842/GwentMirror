@@ -25,7 +25,7 @@
         <div class="SearchCardTypeDivContainer">
             <div class="TypeTile">
                 <span class="TypeName">卡牌</span>
-                <span class="CardNumber">{{ allCardStore.cardData.length }}</span>
+                <span class="CardNumber">{{ allCardStore.cardData.length }}{{ !data.search?' / '+DEFAULT_SIZE:' / '+filteredItems.length }}</span>
             </div>
             <DynamicScroller :items="filteredItems" :min-item-size="54" :emit-update="true" class="scroller ShowList"
                 @update="onUpdate">
@@ -58,6 +58,7 @@ const props = defineProps({
     required: true,
   },
 });
+const DEFAULT_SIZE = 50;
 
 useAllCardStore().initCardData()
 const allCardStore = useAllCardStore();
@@ -74,7 +75,9 @@ const data = ref({
 
 const filteredItems = computed(() => {
     const { search, allCard } = data.value;
-    if (!search) return allCard;
+    if(!search && allCard.length>50){
+        return  [...allCard].slice(0, 50);
+    }
     usrSearchCardBarStatusStore().open()
     const lowerCaseSearch = search.toLowerCase();
     return allCard.filter(i => i.name.toLowerCase().includes(lowerCaseSearch));

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref,defineProps, toRefs, onMounted, computed, watch } from "vue";
+import { ref, defineProps, toRefs, onMounted, computed, watch } from "vue";
 import type { Card } from "@/types/Card";
 import { useCardEnumStore } from "@/stores/CardEnum";
 const CardEnumStore = useCardEnumStore();
@@ -24,52 +24,49 @@ if (props.size) {
 // const {card} = toRefs(props);
 //悬停展示信息
 
-
 const formattedTooltip = computed(() => {
   const text = props.card.tooltip;
-  return text.replace(/\\n/g, "<br/>").replace(/<keyword=([a-zA-Z]+)>/g, "<span class='keyword'>").replace(/<\/keyword>/g, "</span>");
+  return text
+    .replace(/\\n/g, "<br/>")
+    .replace(/<keyword=([a-zA-Z]+)>/g, "<span class='keyword'>")
+    .replace(/<\/keyword>/g, "</span>");
 });
-
 </script>
 
 <template>
   <div id="card-listing">
     <div
       class="card-wrap card-data"
-      :data-res=sizeType
-      :data-id=card.id
+      :data-res="sizeType"
+      :data-id="card.id"
       data-artid="3817j"
-      :data-power=card.power
-      :data-armor=card.armor
-      :data-provision=card.provision
-      :data-faction=card.faction
+      :data-power="card.power"
+      :data-armor="card.armor"
+      :data-provision="card.provision"
+      :data-faction="card.faction"
       data-set="cursed toad"
-      :data-color=card.color
-      :data-type=card.type
-      :data-rarity=card.rarity
+      :data-color="card.color"
+      :data-type="card.type"
+      :data-rarity="card.rarity"
       :data-vertical-dir="card.verticalDir"
       :data-horizontal-dir="card.horizontalDir"
     >
-
-      <div
-        class="card-info-wrap"
-        v-if="card.res == 'larger'"
-      >
+      <div class="card-info-wrap" v-if="card.res == 'larger'">
         <div class="card-head">
           <div class="card-name">{{ card.name }}</div>
           <div class="card-category">{{ card.categories }}</div>
         </div>
         <div class="card-body">
-          <div class="card-body-ability"><span class="keyword doomed">未知</span><br>
+          <div class="card-body-ability">
+            <span class="keyword doomed">未知</span><br />
             <div v-html="formattedTooltip"></div>
-            <br>
+            <br />
           </div>
-          <p class="card-body-ext">{{card.fluff}}
-          </p>
+          <p class="card-body-ext">{{ card.fluff }}</p>
         </div>
       </div>
 
-      <div class="card-art-wrap ">
+      <div class="card-art-wrap">
         <a href="#">
           <!-- <a href="https://gwent.one/cn/card/202793"></a> -->
           <div class="card-image-wrap">
@@ -79,10 +76,7 @@ const formattedTooltip = computed(() => {
             </div>
             <div class="card_asset-border"></div>
 
-            <div
-              class="card_asset-armor-icon"
-              v-if="card.armor != '0'"
-            >
+            <div class="card_asset-armor-icon" v-if="card.armor != '0'">
               <div class="card_asset-armor"></div>
             </div>
             <div
@@ -101,7 +95,6 @@ const formattedTooltip = computed(() => {
             <div class="card_asset-trinket"></div>
             <div class="card_asset-rarity"></div>
           </div>
-
         </a>
       </div>
     </div>
@@ -109,8 +102,7 @@ const formattedTooltip = computed(() => {
 </template>
 
 <style>
-
-.keyword{
+.keyword {
   font-weight: bolder;
 }
 .card-wrap {
@@ -174,14 +166,14 @@ const formattedTooltip = computed(() => {
 .card-info-wrap .card-head .card-name {
   flex: 1 0 100%;
   font-size: 18px;
-  line-height: 13px;
-  color: rgb(255, 255, 255);
+  line-height: 14px;
+  color: rgb(242, 242, 242);
   text-align: center;
-  font-family: 黑体, sans-serif;
+  font-family: HalisGR-Light, sans-serif;
   padding: 5px 20px 0px;
   margin: 0px;
   max-height: 58px;
-  overflow: hidden;
+  /* overflow: hidden; */
   word-break: break-word;
   text-decoration: none;
   /* white-space: nowrap; */
