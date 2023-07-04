@@ -25,7 +25,6 @@
             :data-active="active"  class="message">
             <div id="PageContainer">
               <div id="PageContainerInner">
-              
                 <!-- 预览列表 -->
                 <div id="DeckListGridContainer">
                   <div id="DeckListGridContainerInner">
@@ -55,24 +54,6 @@
         </template>
       </DynamicScroller>
     </template>
-    <!-- <template v-else>
-      <div v-if="!loading" id="PageContainer">
-        <div id="PageContainerInner">
-
-          <form id="SearchFormContainer" @submit.prevent>
-            <CardSearchView :select-card="selectCard"></CardSearchView>
-          </form>
-          <hr />
-
-          <div id="DecksListResult">
-            <span>
-              <b>-> {{ decks.length }} </b>
-              ……{{ tips }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </template> -->
     <!-- 卡牌详细信息1 -->
     <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo" />
     <!-- Loading -->
