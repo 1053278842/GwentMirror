@@ -109,6 +109,7 @@ onMounted(() => {
       <div class="DeckRow_ArtFade_left"></div>
       <div class="DeckRow_Left">
         <div class="DeckIcoContainer">
+          {{ item.displayLeaderCid }}
           <img :src="'/src/assets/card/art/preview/factor/ico/' +
             item.displayLeaderCid +
             '.png'
@@ -215,7 +216,7 @@ onMounted(() => {
     <div ref="bgListener" class="FactorCardBg">
       <div ref="bgOperation" class="bgImg" :style="{
           backgroundImage:
-            'url(/src/assets/card/art/preview/small/' +
+            'url(/src/assets/card/art/preview/leader/' +
             item.displayLeaderCid +
             '.jpg)',
         }"></div>

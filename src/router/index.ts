@@ -4,7 +4,11 @@ import HomeView from '../views/HomeView.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-
+    {
+      path:'/',
+      name: 'indexPage',
+      component: () => import('../views/DeckSearchView.vue')
+    },
     {
       path: '/home',
       name: 'home',
