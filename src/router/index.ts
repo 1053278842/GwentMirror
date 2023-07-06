@@ -5,8 +5,12 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
-      path:'/',
-      name: 'indexPage',
+      path: '/',
+      redirect: '/mirrordeck'
+    },
+    {
+      path:'/mirrordeck',
+      name: 'mirrordeck',
       component: () => import('../views/DeckSearchView.vue')
     },
     {

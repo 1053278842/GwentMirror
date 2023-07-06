@@ -343,7 +343,6 @@ const selectCard = (card: Card) => {
           : 0;
     });
     if (count != selectedCardStore.selectedCard.length) {
-      console.log(deck.deckName);
       decks.splice(decks.indexOf(deck), 1);
     } else {
       i++;
