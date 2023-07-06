@@ -15,7 +15,7 @@ export const useAllCardStore = defineStore("AllCards", () => {
   const CardType = CardEnumStore.CardTypeEnum;
 
   const parentMessage = ref("medium");
-  const imgUrl = ref("../assets/card/art/preview/small/");
+  const imgUrl = ref("../assets/card/art/preview/low/");
   const imgSuffix = ref(".jpg");
   // 返回参数
   const cardData = reactive([] as Card[]);
@@ -52,25 +52,25 @@ export const useAllCardStore = defineStore("AllCards", () => {
       else if (type_web == "2") cardType = CardType.Special;
       var faction = Faction.Monster;
       switch (value_card.factionId) {
-        case "0":
+        case "1":
           faction = Faction.Neutral;
           break;
-        case "1":
+        case "2":
           faction = Faction.Monster;
           break;
-        case "2":
+        case "4":
           faction = Faction.Nilfgaard;
           break;
-        case "3":
+        case "8":
           faction = Faction.Northern_Realms;
           break;
-        case "4":
+        case "16":
           faction = Faction.Scoiatael;
           break;
-        case "5":
+        case "32":
           faction = Faction.Skellige;
           break;
-        case "6":
+        case "64":
           faction = Faction.Syndicate;
           break;
       }

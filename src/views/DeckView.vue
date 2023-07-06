@@ -109,7 +109,6 @@ onMounted(() => {
       <div class="DeckRow_ArtFade_left"></div>
       <div class="DeckRow_Left">
         <div class="DeckIcoContainer">
-          {{ item.displayLeaderCid }}
           <img :src="'/src/assets/card/art/preview/factor/ico/' +
             item.displayLeaderCid +
             '.png'

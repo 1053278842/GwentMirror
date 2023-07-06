@@ -478,7 +478,7 @@ const formattedTooltip = computed(() => {
   background-image: url("src/assets/card/art/preview/banner/provision_skellige.png");
 }
 
-.card-data[data-faction="nilfgarrd"] .card_asset-provision-bg {
+.card-data[data-faction="nilfgaard"] .card_asset-provision-bg {
   background-image: url("src/assets/card/art/preview/banner/provision_nilfgaard.png");
 }
 
