@@ -100,7 +100,7 @@ onMounted(() => {
         <div class="DeckRow_ArtContainerInner" ref="operationsContainer">
           <div class="DeckRow_ArtContainerList" v-for="(card, key) in item.displayCards" :key="key">
             <div class="DeckRow_ArtImgContainer">
-              <img :src="'/src/assets/card/art/preview/small/' + card.id + '.jpg'" />
+              <img :src="'src/assets/card/art/preview/small/' + card.id + '.jpg'" />
             </div>
           </div>
         </div>
@@ -109,7 +109,7 @@ onMounted(() => {
       <div class="DeckRow_ArtFade_left"></div>
       <div class="DeckRow_Left">
         <div class="DeckIcoContainer">
-          <img :src="'/src/assets/card/art/preview/factor/ico/' +
+          <img :src="'src/assets/card/art/preview/factor/ico/' +
             item.displayLeaderCid +
             '.png'
             " />
@@ -170,8 +170,8 @@ onMounted(() => {
                           ? card.id == map[1].cards[cardIndex + 1].id
                           : true,
                     }" :data-id="card.id" style="position: relative" @click="selectCard(card)">
-                    <CardView :card="card" :data-status="card.cardExtInfo.status" class="CardView" />
-                    <CardView :card="card" class="CardView CardIconRepeat" v-if="cardIndex < map[1].cards.length - 1
+                    <CardView :card="card" :size="'low'" :data-status="card.cardExtInfo.status" class="CardView" />
+                    <CardView :card="card" :size="'low'" class="CardView CardIconRepeat" v-if="cardIndex < map[1].cards.length - 1
                         ? card.id == map[1].cards[cardIndex + 1].id
                         : false
                       " />
@@ -205,7 +205,7 @@ onMounted(() => {
         <!-- 卡牌图标列表 -->
         <div class="ColumnGroupCardIcons">
           <div class="ColumnGroupCardIcon" v-for="(card, index) in item.allCard" :key="index" @click="selectCard(card)">
-            <CardView :card="card" class="CardView" :data-status="card.cardExtInfo.status" />
+            <CardView :card="card" :size="'low'" class="CardView" :data-status="card.cardExtInfo.status" />
           </div>
         </div>
       </div>
@@ -215,7 +215,7 @@ onMounted(() => {
     <div ref="bgListener" class="FactorCardBg">
       <div ref="bgOperation" class="bgImg" :style="{
           backgroundImage:
-            'url(/src/assets/card/art/preview/leader/' +
+            'url(src/assets/card/art/preview/leader/' +
             item.displayLeaderCid +
             '.jpg)',
         }"></div>
@@ -247,67 +247,60 @@ onMounted(() => {
 
 .DeckRowFactionBar[data-faction="neutral"] {
   background-color: rgb(217 213 193);
-  /* background-image: url("/src/assets/other/FactionBg/neutral.png"); */
 }
 
 .DeckRowFactionBar[data-faction="skellige"] {
-  /* background-image: url("/src/assets/other/FactionBg/skellige.png"); */
   background-color: #341a7a;
   opacity: 0.8;
 }
 
 .DeckRowFactionBar[data-faction="northern_realms"] {
-  /* background-image: url("/src/assets/other/FactionBg/northern_realms.png"); */
   background-color: #184d8b;
   opacity: 0.8;
 }
 
 .DeckRowFactionBar[data-faction="nilfgaard"] {
-  /* background-image: url("/src/assets/other/FactionBg/nilfgaard.png"); */
   background-color: #020100;
   opacity: 0.8;
 }
 
 .DeckRowFactionBar[data-faction="syndicate"] {
-  /* background-image: url("/src/assets/other/FactionBg/syndicate.png"); */
   background-color: #d37a00;
   opacity: 0.8;
 }
 
 .DeckRowFactionBar[data-faction="monster"] {
-  /* background-image: url("/src/assets/other/FactionBg/monster.png"); */
   background-color: #ab0e0e;
   opacity: 0.8;
 }
 
 .DeckRowFactionBar[data-faction="scoiatael"] {
-  /* background-image: url("/src/assets/other/FactionBg/scoiatael.png"); */
   background-color: #2d7a2a;
   opacity: 0.8;
 }
 
 .FactorDeckBg[data-faction="2"] {
-  background-image: url("/src/assets/card/art/preview/factor/monsters-bg.jpg");
+  background-image: url("@/assets/card/art/preview/factor/monsters-bg.jpg");
 }
 
 .FactorDeckBg[data-faction="4"] {
-  background-image: url("/src/assets/card/art/preview/factor/nilf-bg.jpg");
+  background-image: url("@/assets/card/art/preview/factor/nilf-bg.jpg");
 }
 
 .FactorDeckBg[data-faction="8"] {
-  background-image: url("/src/assets/card/art/preview/factor/northern-bg.jpg");
+  background-image: url("@/assets/card/art/preview/factor/northern-bg.jpg");
 }
 
 .FactorDeckBg[data-faction="16"] {
-  background-image: url("/src/assets/card/art/preview/factor/scoia-bg.jpg");
+  background-image: url("@/assets/card/art/preview/factor/scoia-bg.jpg");
 }
 
 .FactorDeckBg[data-faction="32"] {
-  background-image: url("/src/assets/card/art/preview/factor/skellige-bg.jpg");
+  background-image: url("@/assets/card/art/preview/factor/skellige-bg.jpg");
 }
 
 .FactorDeckBg[data-faction="64"] {
-  background-image: url("/src/assets/card/art/preview/factor/syndicate-bg.jpg");
+  background-image: url("@/assets/card/art/preview/factor/syndicate-bg.jpg");
 }
 
 .DeckRow_Top {
@@ -724,7 +717,7 @@ onMounted(() => {
 .TypeIcon {
   width: 100%;
   height: 100%;
-  background-image: url("/src/assets/other/TypeIcon/filter-type-unit.png");
+  background-image: url("@/assets/other/TypeIcon/filter-type-unit.png");
   background-repeat: no-repeat;
   background-size: cover;
 }

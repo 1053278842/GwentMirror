@@ -8,7 +8,7 @@ import path from 'node:path'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/mirrordeck/', // 设置项目的基本 URL
+  base: '/mirrordeck', // 设置项目的基本 URL
   plugins: [
     vue(),
     // element按需自动导入
@@ -33,13 +33,6 @@ export default defineConfig({
      assetsDir: "src/assets", //指定静态资源存放路径
      // assetsPublicPath:'',
      sourcemap: true, //是否构建source map 文件
-     terserOptions: {
-       // 生产环境移除console
-       compress: {
-         drop_console: true,
-         drop_debugger: true,
-       },
-     },
   },
 
   server: {
@@ -58,7 +51,7 @@ export default defineConfig({
       target: "http://localhost:8081",
       changeOrigin: true,
       rewrite: (path) => path.replace(/^\/localapi/, ""),
-    }
+    },
   },
 },
 },)

@@ -55,7 +55,7 @@
       </DynamicScroller>
     </template>
     <!-- 卡牌详细信息1 -->
-    <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo" />
+    <CardInfo :card="activeCard.cardInfo"  id="CardInfo" />
     <!-- Loading -->
     <LoadingView v-show="loading"></LoadingView>
   </div>

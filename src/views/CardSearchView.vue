@@ -6,7 +6,7 @@
         <div class="SelectCardItemToken">
             <div v-for="(card,index) in selectedCard" :key="index">
                 <div class="CardToken card-data" :data-id="card.id">
-                    <CardView :card="card" :size="'small'"></CardView>
+                    <CardView :card="card" :size="'small'" :res="'small'"></CardView>
                     <div class="deleteToken" @click="selectCard(card as Card)">
                         <div class="deleteIco">
                             <el-icon size="14" color="#fff"> 
@@ -34,7 +34,7 @@
                         <DynamicScrollerItem :item="item" :active="active" :size-dependencies="[
                             item.name,
                         ]" :data-index="index" :data-active="active" :title="`当前Card索引: ${index}`" class="message">
-                            <CardView :card="item" :size="'small'"></CardView>
+                            <CardView :card="item" :size="'small'" :res="'small'"></CardView>
                             <span>{{ item.name }}</span>
                         </DynamicScrollerItem>
                     </ul>

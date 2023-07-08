@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { defineProps, toRefs } from 'vue';
 import type { Card } from '@/types/Card'
 import CardView from './CardView.vue';
 
@@ -15,7 +14,7 @@ const props = defineProps({
 <template>
     <div>
         <div id="PositionContainer"  >
-            <CardView :card="card" :size="'larger'" />
+            <CardView :card="card" :size="'larger'" :res="'larger'" />
         </div>
     </div>
 </template>
