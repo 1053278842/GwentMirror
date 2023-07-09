@@ -3,6 +3,7 @@ import { defineProps, computed } from "vue";
 import type { Card } from "@/types/Card";
 import { useCardEnumStore } from "@/stores/CardEnum";
 import { spriteUtils }  from "@/utils/sprite_img_utils";
+
 const CardEnumStore = useCardEnumStore();
 const CardType = CardEnumStore.CardTypeEnum;
 const props = defineProps({
@@ -333,6 +334,10 @@ const formattedTooltip = computed(() => {
   background-image: url("@/assets/card/art/preview/number/power_18.png");
 }
 
+/* 最优先渲染边框 */
+.card_asset-border {
+  z-index: 99999999999999;
+}
 /* 边框 */
 .card-data[data-color="bronze"] .card_asset-border {
   background-image: url("@/assets/card/art/preview/other/border_bronze.png");
