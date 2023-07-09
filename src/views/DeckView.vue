@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref, toRefs } from "vue";
+import { defineProps, onMounted, reactive, ref, toRefs } from "vue";
 import type { Deck } from "@/types/Deck";
 import type { Card } from "@/types/Card";
 import CardView from "./CardView.vue";
@@ -37,6 +37,9 @@ const bgOperation = ref<HTMLElement | null>(null);
 const bgListener = ref<HTMLElement | null>(null);
 
 onMounted(() => {
+  // 预加载
+  preloadImages()
+
   var startX = 0
   var scaleX = .2;
   var scaleLeftX = .1;
@@ -85,6 +88,24 @@ onMounted(() => {
 
 })
 
+function preloadImages() {
+  // 最先预加载图片边框，防止白边穿帮
+  const img = new Image();
+  const img2 = new Image();
+  const img3 = new Image();
+  const img4 = new Image();
+  const img5 = new Image();
+  img.src = "src/assets/card/art/preview/other/border_bronze.png";
+  img2.src = "src/assets/card/art/preview/other/border_gold.png";
+  img3.src = "src/assets/card/art/preview/factor/desktop-tooltip-bottom.png";
+  img4.src = "src/assets/card/art/preview/factor/desktop-tooltop-center.jpg";
+  img5.src = "src/assets/card/art/preview/factor/tooltip-top-neu.jpg";
+}
+const imageLoadedMap = reactive(new Map());
+
+const handleImageLoad = (cardId:number) => {
+  imageLoadedMap.set(cardId, true);
+};
 
 </script>
 
@@ -100,7 +121,7 @@ onMounted(() => {
         <div class="DeckRow_ArtContainerInner" ref="operationsContainer">
           <div class="DeckRow_ArtContainerList" v-for="(card, key) in item.displayCards" :key="key">
             <div class="DeckRow_ArtImgContainer">
-              <img :src="'src/assets/card/art/preview/small/' + card.id + '.jpg'" />
+              <img :src="'src/assets/card/art/preview/small/' + imageLoadedMap.get(card.id) ?'112101':card.id + '.jpg'" @load="handleImageLoad(card.id)"/>
             </div>
           </div>
         </div>

@@ -75,8 +75,8 @@ const formattedTooltip = computed(() => {
           <div class="card-image-wrap">
             <!-- "'@\assets\card\art\preview\big\'+card.id+'.jpg'" -->
             <div class="card_asset-img">
-              <img loading="lazy" :style="spriteUtils(card.id, size)" />
-              <!-- <img loading="lazy" :src="card.imgUrl" /> -->
+              <!-- <img loading="lazy" :style="spriteUtils(card.id, size)" /> -->
+              <img loading="lazy" :src="card.imgUrl" />
             </div>
             <div class="card_asset-border"></div>
 
@@ -334,10 +334,6 @@ const formattedTooltip = computed(() => {
   background-image: url("@/assets/card/art/preview/number/power_18.png");
 }
 
-/* 最优先渲染边框 */
-.card_asset-border {
-  z-index: 99999999999999;
-}
 /* 边框 */
 .card-data[data-color="bronze"] .card_asset-border {
   background-image: url("@/assets/card/art/preview/other/border_bronze.png");

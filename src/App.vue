@@ -4,14 +4,17 @@ import { RouterLink, RouterView } from 'vue-router'
 import NavView from './views/NavView.vue'
 import {usrNavStatusStore} from '@/stores/status'
 import {useCardEnumStore} from '@/stores/CardEnum'
+import LoadingView from "@/views/LoadingView.vue";
+import { onMounted } from 'vue'
 const useNavStatus = usrNavStatusStore()
 const CardEnum = useCardEnumStore()
 useNavStatus.openNav()
-
 </script>
 
 <template>
-  <NavView v-show="useNavStatus.showNav"></NavView>
+  <!-- <NavView v-show="useNavStatus.showNav"></NavView>
+   -->
+   <LoadingView></LoadingView>
   <RouterView />
 </template>
 
