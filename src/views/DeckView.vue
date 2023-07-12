@@ -121,7 +121,8 @@ const handleImageLoad = (cardId:number) => {
         <div class="DeckRow_ArtContainerInner" ref="operationsContainer">
           <div class="DeckRow_ArtContainerList" v-for="(card, key) in item.displayCards" :key="key">
             <div class="DeckRow_ArtImgContainer">
-              <img :src="'src/assets/card/art/preview/small/' + imageLoadedMap.get(card.id) ?'112101':card.id + '.jpg'" @load="handleImageLoad(card.id)"/>
+              <!-- <img :src="'src/assets/card/art/preview/small/' + imageLoadedMap.get(card.id) ?'112101':card.id + '.jpg'" @load="handleImageLoad(card.id)"/> -->
+              <img :src="'src/assets/card/art/preview/small/' + card.id + '.jpg'" />
             </div>
           </div>
         </div>
