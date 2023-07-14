@@ -114,6 +114,7 @@ const formattedTooltip = computed(() => {
   flex-direction: row-reverse;
   flex-wrap: wrap;
   position: relative;
+  z-index: 1;
 }
 
 .card-info-wrap {
@@ -123,7 +124,7 @@ const formattedTooltip = computed(() => {
   margin-left: 2px;
   pointer-events: none;
   position: absolute;
-  /* z-index: 1; */
+  z-index: 1;
 }
 
 .card-data[data-res="larger"][data-vertical-dir="under"] .card-info-wrap {
