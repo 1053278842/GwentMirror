@@ -421,84 +421,84 @@ if (props.size) {
 
 /* rarity */
 .card-data[data-rarity="common"] .card_asset-rarity {
-  background-image: url("src/assets/card/art/preview/other/rarity_common.png");
+  background-image: url("/src/assets/card/art/preview/other/rarity_common.png");
 }
 
 .card-data[data-rarity="rare"] .card_asset-rarity {
-  background-image: url("src/assets/card/art/preview/other/rarity_rare.png");
+  background-image: url("/src/assets/card/art/preview/other/rarity_rare.png");
 }
 
 .card-data[data-rarity="epic"] .card_asset-rarity {
-  background-image: url("src/assets/card/art/preview/other/rarity_epic.png");
+  background-image: url("/src/assets/card/art/preview/other/rarity_epic.png");
 }
 
 .card-data[data-rarity="legendary"] .card_asset-rarity {
-  background-image: url("src/assets/card/art/preview/other/rarity_legendary.png");
+  background-image: url("/src/assets/card/art/preview/other/rarity_legendary.png");
 }
 
 /* 装饰品 */
 .card-data[data-type="special"] .card_asset-trinket {
-  background-image: url("src/assets/card/art/preview/other/trinket_special.png");
+  background-image: url("/src/assets/card/art/preview/other/trinket_special.png");
 }
 
 .card-data[data-type="stratagem"] .card_asset-trinket {
-  background-image: url("src/assets/card/art/preview/other/trinket_stratagem.png");
+  background-image: url("/src/assets/card/art/preview/other/trinket_stratagem.png");
 }
 
 .card-data[data-type="artifact"] .card_asset-trinket {
-  background-image: url("src/assets/card/art/preview/other/trinket_artifact.png");
+  background-image: url("/src/assets/card/art/preview/other/trinket_artifact.png");
 }
 
 .card_asset-banner {
-  background-image: url("src/assets/card/art/preview/banner/default_nilfgaard.png");
+  background-image: url("/src/assets/card/art/preview/banner/default_nilfgaard.png");
 }
 
 .card-data[data-faction="scoiatael"] .card_asset-banner {
-  background-image: url("src/assets/card/art/preview/banner/default_scoiatael.png");
+  background-image: url("/src/assets/card/art/preview/banner/default_scoiatael.png");
 }
 
 .card-data[data-faction="skellige"] .card_asset-banner {
-  background-image: url("src/assets/card/art/preview/banner/default_skellige.png");
+  background-image: url("/src/assets/card/art/preview/banner/default_skellige.png");
 }
 
 .card-data[data-faction="neutral"] .card_asset-banner {
-  background-image: url("src/assets/card/art/preview/banner/default_neutral.png");
+  background-image: url("/src/assets/card/art/preview/banner/default_neutral.png");
 }
 
 .card-data[data-faction="monster"] .card_asset-banner {
-  background-image: url("src/assets/card/art/preview/banner/default_monster.png");
+  background-image: url("/src/assets/card/art/preview/banner/default_monster.png");
 }
 
 .card-data[data-faction="nilfgaard"] .card_asset-banner {
-  background-image: url("src/assets/card/art/preview/banner/default_nilfgaard.png");
+  background-image: url("/src/assets/card/art/preview/banner/default_nilfgaard.png");
 }
 
 .card-data[data-faction="syndicate"] .card_asset-banner {
-  background-image: url("src/assets/card/art/preview/banner/default_syndicate.png");
+  background-image: url("/src/assets/card/art/preview/banner/default_syndicate.png");
 }
 
 .card-data[data-faction="skellige"] .card_asset-provision-bg {
-  background-image: url("src/assets/card/art/preview/banner/provision_skellige.png");
+  background-image: url("/src/assets/card/art/preview/banner/provision_skellige.png");
 }
 
 .card-data[data-faction="nilfgarrd"] .card_asset-provision-bg {
-  background-image: url("src/assets/card/art/preview/banner/provision_nilfgaard.png");
+  background-image: url("/src/assets/card/art/preview/banner/provision_nilfgaard.png");
 }
 
 .card-data[data-faction="syndicate"] .card_asset-provision-bg {
-  background-image: url("src/assets/card/art/preview/banner/provision_syndicate.png");
+  background-image: url("/src/assets/card/art/preview/banner/provision_syndicate.png");
 }
 
 .card-data[data-faction="monster"] .card_asset-provision-bg {
-  background-image: url("src/assets/card/art/preview/banner/provision_monster.png");
+  background-image: url("/src/assets/card/art/preview/banner/provision_monster.png");
 }
 
 .card-data[data-faction="scoiatael"] .card_asset-provision-bg {
-  background-image: url("src/assets/card/art/preview/banner/provision_scoiatael.png");
+  background-image: url("/src/assets/card/art/preview/banner/provision_scoiatael.png");
 }
 
 .card-data[data-faction="neutral"] .card_asset-provision-bg {
-  background-image: url("src/assets/card/art/preview/banner/provision_neutral.png");
+  background-image: url("/src/assets/card/art/preview/banner/provision_neutral.png");
 }
 
 div[class*="card_asset"] {

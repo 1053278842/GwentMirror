@@ -59,7 +59,6 @@
         </DynamicScrollerItem>
       </template>
     </DynamicScroller>
-    </template>
 
     <!-- 卡牌详细信息1 -->
     <CardInfo :card="activeCard.cardInfo" :size="'small'" id="CardInfo" />
@@ -130,11 +129,19 @@ const fetchData = async () => {
       page: 0,
     };
     tips.value = "风暴正在登陆";
-    getDecksByIds(param).then(deckJsonToViewData);
+    getDecksByIds(param)
+      .then(deckJsonToViewData)
+      .catch(() => {
+        loading.value = false;
+      });
   } else {
     console.log("随机获取n个本版本卡组");
     let MAX_RANDOM_NUM = 50
-    getRandomDeckLast(MAX_RANDOM_NUM).then(deckJsonToViewData);
+    getRandomDeckLast(MAX_RANDOM_NUM)
+      .then(deckJsonToViewData)
+      .catch(() => {
+        loading.value = false;
+      });
   }
 
 };
@@ -176,6 +183,8 @@ const deckJsonToViewData = (res: { data: string | any[] }) => {
   }
 
   isAllLoaded.value = true;
+  // 数据到达后关闭全屏 LOADING 遮罩（原实现只置 true 不置 false，页面会一直卡在遮罩层）
+  loading.value = false;
 }
 
 const computedAllCard = (deck: Deck) => {

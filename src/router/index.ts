@@ -4,7 +4,11 @@ import HomeView from '../views/HomeView.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-
+    {
+      // 容器部署后直接访问 http://<host>/ 落到卡组检索页
+      path: '/',
+      redirect: '/search'
+    },
     {
       path: '/home',
       name: 'home',
