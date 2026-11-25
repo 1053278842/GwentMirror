@@ -3,7 +3,7 @@
 Vue 3 + Vite + Element Plus 的昆特牌卡组站：按卡牌组合检索卡组、卡组详情、悬浮卡牌大图。
 构建产物由 nginx 直接托管，接口统一走 `/gmapi` 反代到后端。
 
-> 本目录是 [gwent-mirror-all](../README.md) 一体化项目的前端层。
+> 本目录是 [gwent-mirror-all](https://github.com/1053278842/GwentMirrorAllInOne) 一体化项目的前端层。
 > 镜像里它被编译成静态文件放到 `/usr/share/nginx/html`。
 
 站点演示（选牌 → 过滤 → 卡组详情，42 帧）：
@@ -12,7 +12,7 @@ Vue 3 + Vite + Element Plus 的昆特牌卡组站：按卡牌组合检索卡组�
 
 静态截图（卡组检索首页）：
 
-![卡组检索首页](../docs/screenshots/01-deck-search.png)
+![卡组检索首页](docs/screenshots/01-deck-search.png)
 
 ---
 
@@ -34,7 +34,15 @@ Vue 3 + Vite + Element Plus 的昆特牌卡组站：按卡牌组合检索卡组�
 4. 没选牌时调 `getRandomDecksLast?num=50`，随机展示 50 套近期卡组；
 5. 鼠标划过卡牌 → 浮出大图 + 技能描述（`CardView.vue` 手绘的卡框/战力/人口叠加）。
 
-![卡牌检索栏与悬浮卡牌](../docs/screenshots/02-card-picker.png)
+![卡牌检索栏与悬浮卡牌](docs/screenshots/02-card-picker.png)
+
+按卡牌过滤（选中 Geralt of Rivia 后命中 15 套，命中的牌带橙色虚线框）：
+
+![按卡牌过滤卡组](docs/screenshots/03-deck-filter.png)
+
+卡组详情（谋略 / 单位 / 特殊 / 神器 分组 + 势力背景）：
+
+![卡组详情](docs/screenshots/04-deck-detail.png)
 
 ## 2. 技术栈与目录
 
